@@ -1,0 +1,91 @@
+<resources>
+    <string name="app_name">حاسبتي</string>
+    <string name="app_version">1.0.0</string>
+    <string name="calculator_title">حاسبتي</string>
+    <string name="history_title">المحفوظات</string>
+    <string name="settings_title">الإعدادات</string>
+    
+    <!-- Calculator Display & Errors -->
+    <string name="error_divide_by_zero">لا يمكن القسمة على صفر</string>
+    <string name="error_invalid">غير صالح</string>
+    <string name="error_overflow">العدد كبير جداً</string>
+    <string name="copied_to_clipboard">تم النسخ إلى الحافظة</string>
+    <string name="used_in_calculator">تم إدراج القيمة في الحاسبة</string>
+    
+    <!-- History -->
+    <string name="clear_history">حذف جميع المحفوظات</string>
+    <string name="clear_history_confirm_title">حذف السجل بالكامل؟</string>
+    <string name="clear_history_confirm_message">هل أنت متأكد من رغبتك في مسح كافة المحفوظات السابقة؟ لا يمكن التراجع عن هذا الإجراء.</string>
+    <string name="delete_single_item">حذف العملية</string>
+    <string name="history_empty_title">لا توجد محفوظات حتى الآن</string>
+    <string name="history_empty_desc">العمليات الحسابية المكتملة ستظهر هنا تلقائياً لسهولة الرجوع إليها أو إعادة استخدامها.</string>
+    <string name="reuse_expression">إعادة العملية</string>
+    <string name="reuse_result">استخدام النتيجة</string>
+    <string name="copy">نسخ</string>
+    
+    <!-- Settings -->
+    <string name="settings_appearance_section">المظهر والوضع</string>
+    <string name="theme_system">تلقائي</string>
+    <string name="theme_light">فاتح</string>
+    <string name="theme_dark">داكن</string>
+    <string name="theme_metallic">معدني</string>
+    <string name="theme_amoled">أسود فاحم</string>
+    <string name="theme_midnight_blue">أزرق ليلي</string>
+    
+    <!-- Language Settings -->
+    <string name="settings_language_section">اللغة (Language)</string>
+    <string name="lang_system">تلقائي النظام</string>
+    <string name="lang_arabic">العربية</string>
+    <string name="lang_english">English</string>
+    
+    <string name="settings_accent_color">لون التمييز (Accent Color)</string>
+    <string name="settings_accent_color_desc">تخصيص لون زر النتيجة والعناصر التفاعلية</string>
+    <string name="accent_blue">الأزرق الملكي</string>
+    <string name="accent_emerald">الزمردي</string>
+    <string name="accent_purple">البنفسجي</string>
+    <string name="accent_orange">البرتقالي</string>
+    <string name="accent_rose">الوردي التوتي</string>
+    <string name="accent_teal">الفيروزي</string>
+    
+    <!-- Calculator Modes -->
+    <string name="mode_basic">أساسية</string>
+    <string name="mode_scientific">علمية</string>
+    <string name="mode_toggle_desc">التبديل بين الحاسبة الأساسية والعلمية</string>
+    <string name="angle_deg">DEG</string>
+    <string name="angle_rad">RAD</string>
+
+    <!-- Math Function Descriptions -->
+    <string name="func_sqrt">جذر تربيعي (√)</string>
+    <string name="func_power">الأس (xʸ)</string>
+    <string name="func_square">المربع (x²)</string>
+    <string name="func_inverse">المقلوب (1/x)</string>
+    <string name="func_pi">الثابت باي (π)</string>
+    <string name="func_e">العدد النيبيري (e)</string>
+    <string name="func_sin">جيب الزاوية (sin)</string>
+    <string name="func_cos">جيب تمام الزاوية (cos)</string>
+    <string name="func_tan">ظل الزاوية (tan)</string>
+    <string name="func_log">اللوغاريتم العشري (log)</string>
+    <string name="func_ln">اللوغاريتم الطبيعي (ln)</string>
+    
+    <string name="settings_feedback_section">التفاعل والملاحظات</string>
+    <string name="settings_vibration">الاهتزاز (Haptic Feedback)</string>
+    <string name="settings_vibration_desc">اهتزاز خفيف وسريع عند الضغط على الأزرار</string>
+    <string name="settings_sound">صوت الأزرار</string>
+    <string name="settings_sound_desc">صوت نقر ناعم عند الضغط على المفاتيح</string>
+    <string name="settings_thousands_sep">فواصل الآلاف</string>
+    <string name="settings_thousands_sep_desc">تنسيق الأرقام لتسهيل قراءتها (مثال: 125,000)</string>
+    
+    <string name="settings_data_section">إدارة البيانات</string>
+    <string name="settings_clear_history_desc">حذف سجل العمليات المحفوظة نهائياً من الذاكرة المحلية</string>
+    
+    <string name="settings_about_section">حول التطبيق</string>
+    <string name="app_description">حاسبة يومية احترافية، سريعة، خفيفة، دقيقة ومجانية تعمل بدون إنترنت.</string>
+    
+    <!-- Actions -->
+    <string name="delete">حذف</string>
+    <string name="cancel">إلغاء</string>
+    <string name="clear">مسح</string>
+    <string name="back">رجوع</string>
+    <string name="close">إغلاق</string>
+</resources>
+

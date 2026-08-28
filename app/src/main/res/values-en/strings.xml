@@ -1,0 +1,90 @@
+<resources>
+    <string name="app_name">Calculator</string>
+    <string name="app_version">1.0.0</string>
+    <string name="calculator_title">Calculator</string>
+    <string name="history_title">History</string>
+    <string name="settings_title">Settings</string>
+    
+    <!-- Calculator Display & Errors -->
+    <string name="error_divide_by_zero">Cannot divide by zero</string>
+    <string name="error_invalid">Invalid</string>
+    <string name="error_overflow">Number too large</string>
+    <string name="copied_to_clipboard">Copied to clipboard</string>
+    <string name="used_in_calculator">Inserted into calculator</string>
+    
+    <!-- History -->
+    <string name="clear_history">Clear all history</string>
+    <string name="clear_history_confirm_title">Clear calculation history?</string>
+    <string name="clear_history_confirm_message">Are you sure you want to delete all previous calculation records? This action cannot be undone.</string>
+    <string name="delete_single_item">Delete record</string>
+    <string name="history_empty_title">No history yet</string>
+    <string name="history_empty_desc">Your completed calculations will automatically appear here for quick reference or reuse.</string>
+    <string name="reuse_expression">Reuse expression</string>
+    <string name="reuse_result">Use result</string>
+    <string name="copy">Copy</string>
+    
+    <!-- Settings -->
+    <string name="settings_appearance_section">Appearance &amp; Mode</string>
+    <string name="theme_system">System</string>
+    <string name="theme_light">Light</string>
+    <string name="theme_dark">Dark</string>
+    <string name="theme_metallic">Metallic</string>
+    <string name="theme_amoled">AMOLED Black</string>
+    <string name="theme_midnight_blue">Midnight Blue</string>
+    
+    <!-- Language Settings -->
+    <string name="settings_language_section">Language</string>
+    <string name="lang_system">System Default</string>
+    <string name="lang_arabic">العربية (Arabic)</string>
+    <string name="lang_english">English</string>
+    
+    <string name="settings_accent_color">Accent Color</string>
+    <string name="settings_accent_color_desc">Customize equal button and interactive elements color</string>
+    <string name="accent_blue">Royal Blue</string>
+    <string name="accent_emerald">Emerald</string>
+    <string name="accent_purple">Purple</string>
+    <string name="accent_orange">Orange</string>
+    <string name="accent_rose">Berry Rose</string>
+    <string name="accent_teal">Teal</string>
+    
+    <!-- Calculator Modes -->
+    <string name="mode_basic">Basic</string>
+    <string name="mode_scientific">Scientific</string>
+    <string name="mode_toggle_desc">Toggle between Basic and Scientific calculator</string>
+    <string name="angle_deg">DEG</string>
+    <string name="angle_rad">RAD</string>
+
+    <!-- Math Function Descriptions -->
+    <string name="func_sqrt">Square Root (√)</string>
+    <string name="func_power">Power (xʸ)</string>
+    <string name="func_square">Square (x²)</string>
+    <string name="func_inverse">Reciprocal (1/x)</string>
+    <string name="func_pi">Pi Constant (π)</string>
+    <string name="func_e">Euler Constant (e)</string>
+    <string name="func_sin">Sine (sin)</string>
+    <string name="func_cos">Cosine (cos)</string>
+    <string name="func_tan">Tangent (tan)</string>
+    <string name="func_log">Base-10 Logarithm (log)</string>
+    <string name="func_ln">Natural Logarithm (ln)</string>
+    
+    <string name="settings_feedback_section">Feedback &amp; Sound</string>
+    <string name="settings_vibration">Haptic Vibration</string>
+    <string name="settings_vibration_desc">Subtle vibration feedback on button presses</string>
+    <string name="settings_sound">Keypress Sound</string>
+    <string name="settings_sound_desc">Soft click tone when typing</string>
+    <string name="settings_thousands_sep">Thousands Separators</string>
+    <string name="settings_thousands_sep_desc">Format numbers for easy reading (e.g. 125,000)</string>
+    
+    <string name="settings_data_section">Data Management</string>
+    <string name="settings_clear_history_desc">Permanently remove saved calculation history from local storage</string>
+    
+    <string name="settings_about_section">About App</string>
+    <string name="app_description">A fast, lightweight, accurate and modern daily calculator working completely offline.</string>
+    
+    <!-- Actions -->
+    <string name="delete">Delete</string>
+    <string name="cancel">Cancel</string>
+    <string name="clear">Clear</string>
+    <string name="back">Back</string>
+    <string name="close">Close</string>
+</resources>

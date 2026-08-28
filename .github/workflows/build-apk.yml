@@ -30,7 +30,7 @@ jobs:
           unzip -q gradle-9.3.1-bin.zip -d "$HOME"
           echo "$HOME/gradle-9.3.1/bin" >> "$GITHUB_PATH"
 
-      - name: Verify Gradle
+      - name: Verify environment
         run: |
           java -version
           gradle --version

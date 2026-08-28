@@ -20,6 +20,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.sp
 
@@ -28,47 +29,45 @@ fun AutoResizeText(
     text: String,
     modifier: Modifier = Modifier,
     color: Color = Color.Unspecified,
-    maxFontSize: TextUnit = 48.sp,
-    minFontSize: TextUnit = 18.sp,
-    fontWeight: FontWeight = FontWeight.SemiBold,
+    maxFontSize: TextUnit = 80.sp,
+    minFontSize: TextUnit = 24.sp,
+    maxLines: Int = 2,
+    fontWeight: FontWeight = FontWeight.Bold,
     textAlign: TextAlign = TextAlign.End,
     style: TextStyle = LocalTextStyle.current
 ) {
     var fontScale by remember(text) { mutableFloatStateOf(1f) }
     var readyToDraw by remember(text) { mutableStateOf(false) }
-    val scrollState = rememberScrollState()
-
-    // Auto-scroll to end on new digits
-    LaunchedEffect(text) {
-        scrollState.scrollTo(scrollState.maxValue)
-    }
 
     val currentFontSize = (maxFontSize.value * fontScale).coerceAtLeast(minFontSize.value).sp
+    val calculatedLineHeight = (currentFontSize.value * 1.08f).sp
 
     Box(
-        modifier = modifier
-            .fillMaxWidth()
-            .horizontalScroll(scrollState),
+        modifier = modifier.fillMaxWidth(),
         contentAlignment = Alignment.CenterEnd
     ) {
         Text(
             text = text,
-            modifier = Modifier.drawWithContent {
-                if (readyToDraw) {
-                    drawContent()
-                }
-            },
+            modifier = Modifier
+                .fillMaxWidth()
+                .drawWithContent {
+                    if (readyToDraw) {
+                        drawContent()
+                    }
+                },
             color = color,
             fontSize = currentFontSize,
+            lineHeight = calculatedLineHeight,
             fontWeight = fontWeight,
             textAlign = textAlign,
-            maxLines = 1,
-            softWrap = false,
+            maxLines = maxLines,
+            softWrap = true,
+            overflow = TextOverflow.Ellipsis,
             style = style,
             onTextLayout = { textLayoutResult ->
-                if (textLayoutResult.didOverflowWidth) {
+                if (textLayoutResult.didOverflowHeight || textLayoutResult.didOverflowWidth) {
                     if (currentFontSize.value > minFontSize.value) {
-                        fontScale *= 0.88f
+                        fontScale *= 0.85f
                     } else {
                         readyToDraw = true
                     }
@@ -79,4 +78,3 @@ fun AutoResizeText(
         )
     }
 }
-

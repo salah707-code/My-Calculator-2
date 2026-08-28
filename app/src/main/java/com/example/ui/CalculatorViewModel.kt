@@ -100,6 +100,10 @@ class CalculatorViewModel(application: Application) : AndroidViewModel(applicati
         preferencesRepository.setScientificModeEnabled(newMode)
     }
 
+    fun setCalculatorMode(mode: com.example.model.CalculatorMode) {
+        preferencesRepository.setScientificModeEnabled(mode == com.example.model.CalculatorMode.SCIENTIFIC)
+    }
+
     fun toggleDegMode() {
         val newDeg = !degModeEnabled.value
         preferencesRepository.setDegModeEnabled(newDeg)

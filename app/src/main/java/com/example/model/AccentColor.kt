@@ -18,12 +18,26 @@ enum class AccentColor(
         lightSoft = Color(0xFFEFF6FF),
         darkSoft = Color(0xFF1E293B)
     ),
+    CYAN(
+        titleRes = R.string.accent_cyan,
+        color = Color(0xFF0284C7),
+        darkColor = Color(0xFF38BDF8),
+        lightSoft = Color(0xFFF0F9FF),
+        darkSoft = Color(0xFF0C4A6E)
+    ),
     EMERALD(
         titleRes = R.string.accent_emerald,
         color = Color(0xFF059669),
         darkColor = Color(0xFF10B981),
         lightSoft = Color(0xFFECFDF5),
         darkSoft = Color(0xFF064E3B)
+    ),
+    AMBER(
+        titleRes = R.string.accent_amber,
+        color = Color(0xFFD97706),
+        darkColor = Color(0xFFFBBF24),
+        lightSoft = Color(0xFFFFFBEB),
+        darkSoft = Color(0xFF451A03)
     ),
     PURPLE(
         titleRes = R.string.accent_purple,
@@ -32,19 +46,19 @@ enum class AccentColor(
         lightSoft = Color(0xFFF5F3FF),
         darkSoft = Color(0xFF2E1065)
     ),
-    ORANGE(
-        titleRes = R.string.accent_orange,
-        color = Color(0xFFEA580C),
-        darkColor = Color(0xFFF97316),
-        lightSoft = Color(0xFFFFF7ED),
-        darkSoft = Color(0xFF431407)
-    ),
     ROSE(
         titleRes = R.string.accent_rose,
         color = Color(0xFFE11D48),
         darkColor = Color(0xFFF43F5E),
         lightSoft = Color(0xFFFFF1F2),
         darkSoft = Color(0xFF4C0519)
+    ),
+    ORANGE(
+        titleRes = R.string.accent_orange,
+        color = Color(0xFFEA580C),
+        darkColor = Color(0xFFF97316),
+        lightSoft = Color(0xFFFFF7ED),
+        darkSoft = Color(0xFF431407)
     ),
     TEAL(
         titleRes = R.string.accent_teal,

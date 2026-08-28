@@ -3,16 +3,15 @@ package com.example.ui.screens
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
+import android.view.View
 import android.widget.Toast
 import androidx.compose.animation.AnimatedContent
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.animateColorAsState
-import androidx.compose.animation.expandVertically
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
-import androidx.compose.animation.shrinkVertically
 import androidx.compose.animation.togetherWith
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.isSystemInDarkTheme
@@ -28,37 +27,28 @@ import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Calculate
-import androidx.compose.material.icons.filled.DarkMode
-import androidx.compose.material.icons.filled.Functions
-import androidx.compose.material.icons.filled.History
-import androidx.compose.material.icons.filled.LightMode
-import androidx.compose.material.icons.filled.Palette
 import androidx.compose.material.icons.filled.Settings
-import androidx.compose.material.icons.filled.SettingsBrightness
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -79,12 +69,8 @@ import com.example.ui.components.CalculatorKeyButton
 fun CalculatorScreen(
     state: CalculatorState,
     currentTheme: AppTheme,
-    onKeyClick: (CalculatorKey) -> Unit,
-    onToggleMode: () -> Unit,
-    onToggleDegMode: () -> Unit,
-    onOpenHistory: () -> Unit,
+    onKeyClick: (CalculatorKey, View) -> Unit,
     onOpenSettings: () -> Unit,
-    onToggleTheme: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     val context = LocalContext.current
@@ -104,32 +90,26 @@ fun CalculatorScreen(
                 .fillMaxSize()
                 .statusBarsPadding()
                 .navigationBarsPadding()
-                .padding(top = 2.dp)
+                .padding(top = 6.dp)
                 .widthIn(max = 600.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.SpaceBetween
         ) {
-            // Top Navigation & Action Bar
+            // Top Action Bar with sleek luxury logo and single Settings icon
             TopActionBar(
-                currentTheme = currentTheme,
                 isScientific = isScientific,
-                onToggleMode = onToggleMode,
-                onOpenHistory = onOpenHistory,
+                isDegMode = state.isDegMode,
                 onOpenSettings = onOpenSettings,
-                onToggleTheme = onToggleTheme,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 14.dp, vertical = 2.dp)
+                    .padding(horizontal = 18.dp, vertical = 4.dp)
             )
 
-            // Compact Display Screen Area
+            // Large Display Screen Area with responsive double-sized multi-line numbers
             DisplayScreen(
                 expression = state.secondaryDisplay,
                 displayValue = state.primaryDisplay,
                 isError = state.isError,
-                isScientific = isScientific,
-                isDegMode = state.isDegMode,
-                onToggleDegMode = onToggleDegMode,
                 onCopy = {
                     val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
                     val clip = ClipData.newPlainText("Calculator Value", state.primaryDisplay)
@@ -142,30 +122,23 @@ fun CalculatorScreen(
                 },
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 18.dp, vertical = 2.dp)
+                    .padding(horizontal = 20.dp, vertical = 6.dp)
             )
 
-            // Mode Selector Pill (Basic vs Scientific)
-            ModeSelectorBar(
-                isScientific = isScientific,
-                isDegMode = state.isDegMode,
-                onToggleMode = onToggleMode,
-                onToggleDegMode = onToggleDegMode,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 18.dp, vertical = 4.dp)
-            )
-
-            // Keypad Container Area
+            // Keypad Container Area - Fills remaining space with large double-height keys
             Card(
-                shape = RoundedCornerShape(topStart = 26.dp, topEnd = 26.dp),
+                shape = RoundedCornerShape(topStart = 32.dp, topEnd = 32.dp),
                 colors = CardDefaults.cardColors(
                     containerColor = MaterialTheme.colorScheme.surface
+                ),
+                border = androidx.compose.foundation.BorderStroke(
+                    1.dp,
+                    MaterialTheme.colorScheme.outline.copy(alpha = if (isDark) 0.35f else 0.2f)
                 ),
                 elevation = CardDefaults.cardElevation(defaultElevation = if (isDark) 0.dp else 4.dp),
                 modifier = Modifier
                     .fillMaxWidth()
-                    .weight(1f, fill = false)
+                    .weight(1f)
             ) {
                 // Force LTR layout inside keypad so operations (+, −, ×, ÷, =) are strictly on the RIGHT column
                 CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Ltr) {
@@ -176,8 +149,8 @@ fun CalculatorScreen(
                             onKeyClick = onKeyClick,
                             isDarkTheme = isDark,
                             modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(horizontal = 12.dp, vertical = 10.dp)
+                                .fillMaxSize()
+                                .padding(horizontal = 12.dp, vertical = 12.dp)
                         )
                     } else {
                         BasicKeypadGrid(
@@ -185,8 +158,8 @@ fun CalculatorScreen(
                             onKeyClick = onKeyClick,
                             isDarkTheme = isDark,
                             modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(horizontal = 14.dp, vertical = 12.dp)
+                                .fillMaxSize()
+                                .padding(horizontal = 14.dp, vertical = 14.dp)
                         )
                     }
                 }
@@ -197,229 +170,71 @@ fun CalculatorScreen(
 
 @Composable
 fun TopActionBar(
-    currentTheme: AppTheme,
-    isScientific: Boolean,
-    onToggleMode: () -> Unit,
-    onOpenHistory: () -> Unit,
-    onOpenSettings: () -> Unit,
-    onToggleTheme: () -> Unit,
-    modifier: Modifier = Modifier
-) {
-    Row(
-        modifier = modifier.height(44.dp),
-        horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        // App Brand & Logo Pill
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(8.dp)
-        ) {
-            Box(
-                modifier = Modifier
-                    .size(30.dp)
-                    .clip(RoundedCornerShape(8.dp))
-                    .background(MaterialTheme.colorScheme.primary),
-                contentAlignment = Alignment.Center
-            ) {
-                Text(
-                    text = if (isScientific) "f(x)" else "±",
-                    color = MaterialTheme.colorScheme.onPrimary,
-                    fontSize = if (isScientific) 11.sp else 15.sp,
-                    fontWeight = FontWeight.Bold
-                )
-            }
-
-            Text(
-                text = stringResource(R.string.app_name),
-                fontSize = 17.sp,
-                fontWeight = FontWeight.Bold,
-                color = MaterialTheme.colorScheme.onBackground
-            )
-        }
-
-        // Action Pill Buttons
-        Row(
-            horizontalArrangement = Arrangement.spacedBy(6.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            // Mode toggle quick button
-            IconButton(
-                onClick = onToggleMode,
-                modifier = Modifier
-                    .size(34.dp)
-                    .clip(CircleShape)
-                    .background(
-                        if (isScientific) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.surfaceVariant
-                    )
-                    .testTag("btn_toggle_mode_top")
-            ) {
-                Icon(
-                    imageVector = if (isScientific) Icons.Default.Functions else Icons.Default.Calculate,
-                    contentDescription = stringResource(R.string.mode_toggle_desc),
-                    tint = if (isScientific) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant,
-                    modifier = Modifier.size(18.dp)
-                )
-            }
-
-            // Theme toggle
-            IconButton(
-                onClick = onToggleTheme,
-                modifier = Modifier
-                    .size(34.dp)
-                    .clip(CircleShape)
-                    .background(MaterialTheme.colorScheme.surfaceVariant)
-                    .testTag("btn_toggle_theme")
-            ) {
-                val icon = when (currentTheme) {
-                    AppTheme.SYSTEM -> Icons.Default.SettingsBrightness
-                    AppTheme.LIGHT -> Icons.Default.LightMode
-                    AppTheme.DARK, AppTheme.AMOLED -> Icons.Default.DarkMode
-                    AppTheme.METALLIC, AppTheme.MIDNIGHT_BLUE -> Icons.Default.Palette
-                }
-                Icon(
-                    imageVector = icon,
-                    contentDescription = stringResource(R.string.settings_appearance_section),
-                    tint = MaterialTheme.colorScheme.onSurfaceVariant,
-                    modifier = Modifier.size(17.dp)
-                )
-            }
-
-            // History Button
-            IconButton(
-                onClick = onOpenHistory,
-                modifier = Modifier
-                    .size(34.dp)
-                    .clip(CircleShape)
-                    .background(MaterialTheme.colorScheme.surfaceVariant)
-                    .testTag("btn_open_history")
-            ) {
-                Icon(
-                    imageVector = Icons.Default.History,
-                    contentDescription = stringResource(R.string.history_title),
-                    tint = MaterialTheme.colorScheme.onSurfaceVariant,
-                    modifier = Modifier.size(17.dp)
-                )
-            }
-
-            // Settings Button
-            IconButton(
-                onClick = onOpenSettings,
-                modifier = Modifier
-                    .size(34.dp)
-                    .clip(CircleShape)
-                    .background(MaterialTheme.colorScheme.surfaceVariant)
-                    .testTag("btn_open_settings")
-            ) {
-                Icon(
-                    imageVector = Icons.Default.Settings,
-                    contentDescription = stringResource(R.string.settings_title),
-                    tint = MaterialTheme.colorScheme.onSurfaceVariant,
-                    modifier = Modifier.size(17.dp)
-                )
-            }
-        }
-    }
-}
-
-@Composable
-fun ModeSelectorBar(
     isScientific: Boolean,
     isDegMode: Boolean,
-    onToggleMode: () -> Unit,
-    onToggleDegMode: () -> Unit,
+    onOpenSettings: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Row(
-        modifier = modifier,
+        modifier = modifier.height(52.dp),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
-        // Mode Switcher Pill
-        Box(
-            modifier = Modifier
-                .clip(RoundedCornerShape(12.dp))
-                .background(MaterialTheme.colorScheme.surfaceVariant)
-                .padding(3.dp)
+        // App Brand & Mode Indicator Pill with Luxury Graphic Logo
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(12.dp)
         ) {
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(4.dp)
+            Box(
+                modifier = Modifier
+                    .size(42.dp)
+                    .clip(RoundedCornerShape(12.dp))
+                    .border(1.5.dp, MaterialTheme.colorScheme.primary.copy(alpha = 0.6f), RoundedCornerShape(12.dp)),
+                contentAlignment = Alignment.Center
             ) {
-                // Basic Mode Segment
-                val basicBg by animateColorAsState(
-                    targetValue = if (!isScientific) MaterialTheme.colorScheme.primary else Color.Transparent,
-                    label = "basic_tab_bg"
+                Image(
+                    painter = painterResource(id = R.drawable.calculator_lux_icon_1787915115809),
+                    contentDescription = stringResource(R.string.app_name),
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier.fillMaxSize()
                 )
-                val basicText by animateColorAsState(
-                    targetValue = if (!isScientific) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurfaceVariant,
-                    label = "basic_tab_txt"
-                )
+            }
 
-                Box(
-                    modifier = Modifier
-                        .clip(RoundedCornerShape(9.dp))
-                        .background(basicBg)
-                        .clickable { if (isScientific) onToggleMode() }
-                        .padding(horizontal = 12.dp, vertical = 5.dp)
-                        .testTag("btn_mode_basic"),
-                    contentAlignment = Alignment.Center
-                ) {
+            Column {
+                Text(
+                    text = stringResource(R.string.app_name),
+                    fontSize = 19.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.onBackground
+                )
+                if (isScientific) {
                     Text(
-                        text = stringResource(R.string.mode_basic),
-                        fontSize = 13.sp,
-                        fontWeight = if (!isScientific) FontWeight.Bold else FontWeight.Medium,
-                        color = basicText
-                    )
-                }
-
-                // Scientific Mode Segment
-                val sciBg by animateColorAsState(
-                    targetValue = if (isScientific) MaterialTheme.colorScheme.primary else Color.Transparent,
-                    label = "sci_tab_bg"
-                )
-                val sciText by animateColorAsState(
-                    targetValue = if (isScientific) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurfaceVariant,
-                    label = "sci_tab_txt"
-                )
-
-                Box(
-                    modifier = Modifier
-                        .clip(RoundedCornerShape(9.dp))
-                        .background(sciBg)
-                        .clickable { if (!isScientific) onToggleMode() }
-                        .padding(horizontal = 12.dp, vertical = 5.dp)
-                        .testTag("btn_mode_scientific"),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Text(
-                        text = stringResource(R.string.mode_scientific),
-                        fontSize = 13.sp,
-                        fontWeight = if (isScientific) FontWeight.Bold else FontWeight.Medium,
-                        color = sciText
+                        text = if (isDegMode) "DEG (°)" else "RAD (rad)",
+                        fontSize = 11.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = MaterialTheme.colorScheme.primary
                     )
                 }
             }
         }
 
-        // Angle Mode Indicator & Toggle Chip (when in Scientific mode)
-        if (isScientific) {
-            Box(
-                modifier = Modifier
-                    .clip(RoundedCornerShape(10.dp))
-                    .background(MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.7f))
-                    .clickable { onToggleDegMode() }
-                    .padding(horizontal = 10.dp, vertical = 5.dp)
-                    .testTag("btn_angle_unit_top"),
-                contentAlignment = Alignment.Center
-            ) {
-                Text(
-                    text = if (isDegMode) stringResource(R.string.angle_deg) else stringResource(R.string.angle_rad),
-                    fontSize = 12.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = MaterialTheme.colorScheme.primary
-                )
-            }
+        // Single Consolidated Settings Button with polished aesthetic
+        Box(
+            modifier = Modifier
+                .size(44.dp)
+                .clip(CircleShape)
+                .background(MaterialTheme.colorScheme.surfaceVariant)
+                .border(1.2.dp, MaterialTheme.colorScheme.primary.copy(alpha = 0.35f), CircleShape)
+                .clickable { onOpenSettings() }
+                .testTag("btn_open_settings"),
+            contentAlignment = Alignment.Center
+        ) {
+            Icon(
+                imageVector = Icons.Default.Settings,
+                contentDescription = stringResource(R.string.settings_title),
+                tint = MaterialTheme.colorScheme.primary,
+                modifier = Modifier.size(24.dp)
+            )
         }
     }
 }
@@ -429,9 +244,6 @@ fun DisplayScreen(
     expression: String,
     displayValue: String,
     isError: Boolean,
-    isScientific: Boolean,
-    isDegMode: Boolean,
-    onToggleDegMode: () -> Unit,
     onCopy: () -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -449,7 +261,7 @@ fun DisplayScreen(
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(vertical = 2.dp),
+                .padding(vertical = 4.dp),
             verticalArrangement = Arrangement.Bottom,
             horizontalAlignment = Alignment.End
         ) {
@@ -461,9 +273,9 @@ fun DisplayScreen(
             ) { targetExpr ->
                 Text(
                     text = targetExpr.ifEmpty { " " },
-                    fontSize = 16.sp,
+                    fontSize = 19.sp,
                     fontWeight = FontWeight.Medium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.8f),
+                    color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.85f),
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
                     textAlign = TextAlign.End,
@@ -471,14 +283,15 @@ fun DisplayScreen(
                 )
             }
 
-            Spacer(modifier = Modifier.height(2.dp))
+            Spacer(modifier = Modifier.height(4.dp))
 
-            // Primary Result Display (High capacity, auto-resizing, compact height)
+            // Primary Result Display (Doubled font size, smart 2-line splitting / auto-resize)
             AutoResizeText(
                 text = displayValue,
-                maxFontSize = if (isScientific) 42.sp else 46.sp,
-                minFontSize = 16.sp,
-                fontWeight = FontWeight.SemiBold,
+                maxFontSize = 80.sp,
+                minFontSize = 24.sp,
+                maxLines = 2,
+                fontWeight = FontWeight.Bold,
                 color = if (isError) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.onBackground,
                 textAlign = TextAlign.End,
                 modifier = Modifier.fillMaxWidth()
@@ -490,12 +303,11 @@ fun DisplayScreen(
 @Composable
 fun BasicKeypadGrid(
     activeOperator: String?,
-    onKeyClick: (CalculatorKey) -> Unit,
+    onKeyClick: (CalculatorKey, View) -> Unit,
     isDarkTheme: Boolean,
     modifier: Modifier = Modifier
 ) {
-    val keyHeight = 54.dp
-    val spacing = 8.dp
+    val spacing = 10.dp
 
     Column(
         modifier = modifier,
@@ -503,201 +315,213 @@ fun BasicKeypadGrid(
     ) {
         // Row 1: [ AC ] | [ ⌫ ] | [ % ] | [ ÷ ] (Operator on the RIGHT)
         Row(
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier
+                .fillMaxWidth()
+                .weight(1f),
             horizontalArrangement = Arrangement.spacedBy(spacing)
         ) {
             CalculatorKeyButton(
                 key = CalculatorKey.AllClear,
                 keyType = KeyType.UTILITY,
-                onClick = { onKeyClick(CalculatorKey.AllClear) },
+                onClick = { view -> onKeyClick(CalculatorKey.AllClear, view) },
                 isDarkTheme = isDarkTheme,
-                modifier = Modifier.weight(1f).height(keyHeight)
+                modifier = Modifier.weight(1f)
             )
             CalculatorKeyButton(
                 key = CalculatorKey.Backspace,
                 keyType = KeyType.UTILITY,
-                onClick = { onKeyClick(CalculatorKey.Backspace) },
+                onClick = { view -> onKeyClick(CalculatorKey.Backspace, view) },
                 isDarkTheme = isDarkTheme,
-                modifier = Modifier.weight(1f).height(keyHeight)
+                modifier = Modifier.weight(1f)
             )
             CalculatorKeyButton(
                 key = CalculatorKey.Percent,
                 keyType = KeyType.UTILITY,
-                onClick = { onKeyClick(CalculatorKey.Percent) },
+                onClick = { view -> onKeyClick(CalculatorKey.Percent, view) },
                 isDarkTheme = isDarkTheme,
-                modifier = Modifier.weight(1f).height(keyHeight)
+                modifier = Modifier.weight(1f)
             )
             CalculatorKeyButton(
                 key = CalculatorKey.Divide,
                 keyType = KeyType.OPERATOR,
                 isActiveOperator = activeOperator == "÷" || activeOperator == "/",
-                onClick = { onKeyClick(CalculatorKey.Divide) },
+                onClick = { view -> onKeyClick(CalculatorKey.Divide, view) },
                 isDarkTheme = isDarkTheme,
-                modifier = Modifier.weight(1f).height(keyHeight)
+                modifier = Modifier.weight(1f)
             )
         }
 
         // Row 2: [ 7 ] | [ 8 ] | [ 9 ] | [ × ] (Operator on the RIGHT)
         Row(
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier
+                .fillMaxWidth()
+                .weight(1f),
             horizontalArrangement = Arrangement.spacedBy(spacing)
         ) {
             CalculatorKeyButton(
                 key = CalculatorKey.Digit("7"),
                 keyType = KeyType.NUMBER,
-                onClick = { onKeyClick(CalculatorKey.Digit("7")) },
+                onClick = { view -> onKeyClick(CalculatorKey.Digit("7"), view) },
                 isDarkTheme = isDarkTheme,
-                modifier = Modifier.weight(1f).height(keyHeight)
+                modifier = Modifier.weight(1f)
             )
             CalculatorKeyButton(
                 key = CalculatorKey.Digit("8"),
                 keyType = KeyType.NUMBER,
-                onClick = { onKeyClick(CalculatorKey.Digit("8")) },
+                onClick = { view -> onKeyClick(CalculatorKey.Digit("8"), view) },
                 isDarkTheme = isDarkTheme,
-                modifier = Modifier.weight(1f).height(keyHeight)
+                modifier = Modifier.weight(1f)
             )
             CalculatorKeyButton(
                 key = CalculatorKey.Digit("9"),
                 keyType = KeyType.NUMBER,
-                onClick = { onKeyClick(CalculatorKey.Digit("9")) },
+                onClick = { view -> onKeyClick(CalculatorKey.Digit("9"), view) },
                 isDarkTheme = isDarkTheme,
-                modifier = Modifier.weight(1f).height(keyHeight)
+                modifier = Modifier.weight(1f)
             )
             CalculatorKeyButton(
                 key = CalculatorKey.Multiply,
                 keyType = KeyType.OPERATOR,
                 isActiveOperator = activeOperator == "×" || activeOperator == "*",
-                onClick = { onKeyClick(CalculatorKey.Multiply) },
+                onClick = { view -> onKeyClick(CalculatorKey.Multiply, view) },
                 isDarkTheme = isDarkTheme,
-                modifier = Modifier.weight(1f).height(keyHeight)
+                modifier = Modifier.weight(1f)
             )
         }
 
         // Row 3: [ 4 ] | [ 5 ] | [ 6 ] | [ − ] (Operator on the RIGHT)
         Row(
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier
+                .fillMaxWidth()
+                .weight(1f),
             horizontalArrangement = Arrangement.spacedBy(spacing)
         ) {
             CalculatorKeyButton(
                 key = CalculatorKey.Digit("4"),
                 keyType = KeyType.NUMBER,
-                onClick = { onKeyClick(CalculatorKey.Digit("4")) },
+                onClick = { view -> onKeyClick(CalculatorKey.Digit("4"), view) },
                 isDarkTheme = isDarkTheme,
-                modifier = Modifier.weight(1f).height(keyHeight)
+                modifier = Modifier.weight(1f)
             )
             CalculatorKeyButton(
                 key = CalculatorKey.Digit("5"),
                 keyType = KeyType.NUMBER,
-                onClick = { onKeyClick(CalculatorKey.Digit("5")) },
+                onClick = { view -> onKeyClick(CalculatorKey.Digit("5"), view) },
                 isDarkTheme = isDarkTheme,
-                modifier = Modifier.weight(1f).height(keyHeight)
+                modifier = Modifier.weight(1f)
             )
             CalculatorKeyButton(
                 key = CalculatorKey.Digit("6"),
                 keyType = KeyType.NUMBER,
-                onClick = { onKeyClick(CalculatorKey.Digit("6")) },
+                onClick = { view -> onKeyClick(CalculatorKey.Digit("6"), view) },
                 isDarkTheme = isDarkTheme,
-                modifier = Modifier.weight(1f).height(keyHeight)
+                modifier = Modifier.weight(1f)
             )
             CalculatorKeyButton(
                 key = CalculatorKey.Subtract,
                 keyType = KeyType.OPERATOR,
                 isActiveOperator = activeOperator == "−" || activeOperator == "-",
-                onClick = { onKeyClick(CalculatorKey.Subtract) },
+                onClick = { view -> onKeyClick(CalculatorKey.Subtract, view) },
                 isDarkTheme = isDarkTheme,
-                modifier = Modifier.weight(1f).height(keyHeight)
+                modifier = Modifier.weight(1f)
             )
         }
 
         // Row 4: [ 1 ] | [ 2 ] | [ 3 ] | [ + ] (Operator on the RIGHT)
         Row(
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier
+                .fillMaxWidth()
+                .weight(1f),
             horizontalArrangement = Arrangement.spacedBy(spacing)
         ) {
             CalculatorKeyButton(
                 key = CalculatorKey.Digit("1"),
                 keyType = KeyType.NUMBER,
-                onClick = { onKeyClick(CalculatorKey.Digit("1")) },
+                onClick = { view -> onKeyClick(CalculatorKey.Digit("1"), view) },
                 isDarkTheme = isDarkTheme,
-                modifier = Modifier.weight(1f).height(keyHeight)
+                modifier = Modifier.weight(1f)
             )
             CalculatorKeyButton(
                 key = CalculatorKey.Digit("2"),
                 keyType = KeyType.NUMBER,
-                onClick = { onKeyClick(CalculatorKey.Digit("2")) },
+                onClick = { view -> onKeyClick(CalculatorKey.Digit("2"), view) },
                 isDarkTheme = isDarkTheme,
-                modifier = Modifier.weight(1f).height(keyHeight)
+                modifier = Modifier.weight(1f)
             )
             CalculatorKeyButton(
                 key = CalculatorKey.Digit("3"),
                 keyType = KeyType.NUMBER,
-                onClick = { onKeyClick(CalculatorKey.Digit("3")) },
+                onClick = { view -> onKeyClick(CalculatorKey.Digit("3"), view) },
                 isDarkTheme = isDarkTheme,
-                modifier = Modifier.weight(1f).height(keyHeight)
+                modifier = Modifier.weight(1f)
             )
             CalculatorKeyButton(
                 key = CalculatorKey.Add,
                 keyType = KeyType.OPERATOR,
                 isActiveOperator = activeOperator == "+",
-                onClick = { onKeyClick(CalculatorKey.Add) },
+                onClick = { view -> onKeyClick(CalculatorKey.Add, view) },
                 isDarkTheme = isDarkTheme,
-                modifier = Modifier.weight(1f).height(keyHeight)
+                modifier = Modifier.weight(1f)
             )
         }
 
         // Row 5: [ ± ] | [ 000 ] | [ 00 ] | [ 0 ]
         Row(
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier
+                .fillMaxWidth()
+                .weight(1f),
             horizontalArrangement = Arrangement.spacedBy(spacing)
         ) {
             CalculatorKeyButton(
                 key = CalculatorKey.PlusMinus,
                 keyType = KeyType.UTILITY,
-                onClick = { onKeyClick(CalculatorKey.PlusMinus) },
+                onClick = { view -> onKeyClick(CalculatorKey.PlusMinus, view) },
                 isDarkTheme = isDarkTheme,
-                modifier = Modifier.weight(1f).height(keyHeight)
+                modifier = Modifier.weight(1f)
             )
             CalculatorKeyButton(
                 key = CalculatorKey.TripleZero,
                 keyType = KeyType.NUMBER,
-                onClick = { onKeyClick(CalculatorKey.TripleZero) },
+                onClick = { view -> onKeyClick(CalculatorKey.TripleZero, view) },
                 isDarkTheme = isDarkTheme,
-                modifier = Modifier.weight(1f).height(keyHeight)
+                modifier = Modifier.weight(1f)
             )
             CalculatorKeyButton(
                 key = CalculatorKey.DoubleZero,
                 keyType = KeyType.NUMBER,
-                onClick = { onKeyClick(CalculatorKey.DoubleZero) },
+                onClick = { view -> onKeyClick(CalculatorKey.DoubleZero, view) },
                 isDarkTheme = isDarkTheme,
-                modifier = Modifier.weight(1f).height(keyHeight)
+                modifier = Modifier.weight(1f)
             )
             CalculatorKeyButton(
                 key = CalculatorKey.Digit("0"),
                 keyType = KeyType.NUMBER,
-                onClick = { onKeyClick(CalculatorKey.Digit("0")) },
+                onClick = { view -> onKeyClick(CalculatorKey.Digit("0"), view) },
                 isDarkTheme = isDarkTheme,
-                modifier = Modifier.weight(1f).height(keyHeight)
+                modifier = Modifier.weight(1f)
             )
         }
 
-        // Row 6: [ . ] (weight 1) | [ = ] (weight 3 - rightmost equal result action)
+        // Row 6: [ . ] (weight 1) | [ = ] (weight 3 - prominent equal result action with uniform shading)
         Row(
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier
+                .fillMaxWidth()
+                .weight(1f),
             horizontalArrangement = Arrangement.spacedBy(spacing)
         ) {
             CalculatorKeyButton(
                 key = CalculatorKey.DecimalDot,
                 keyType = KeyType.NUMBER,
-                onClick = { onKeyClick(CalculatorKey.DecimalDot) },
+                onClick = { view -> onKeyClick(CalculatorKey.DecimalDot, view) },
                 isDarkTheme = isDarkTheme,
-                modifier = Modifier.weight(1f).height(keyHeight)
+                modifier = Modifier.weight(1f)
             )
             CalculatorKeyButton(
                 key = CalculatorKey.Equals,
                 keyType = KeyType.EQUALS,
-                onClick = { onKeyClick(CalculatorKey.Equals) },
+                onClick = { view -> onKeyClick(CalculatorKey.Equals, view) },
                 isDarkTheme = isDarkTheme,
-                modifier = Modifier.weight(3f).height(keyHeight)
+                modifier = Modifier.weight(3f)
             )
         }
     }
@@ -707,13 +531,11 @@ fun BasicKeypadGrid(
 fun ScientificKeypadGrid(
     activeOperator: String?,
     isDegMode: Boolean,
-    onKeyClick: (CalculatorKey) -> Unit,
+    onKeyClick: (CalculatorKey, View) -> Unit,
     isDarkTheme: Boolean,
     modifier: Modifier = Modifier
 ) {
-    val sciKeyHeight = 39.dp
-    val numKeyHeight = 46.dp
-    val spacing = 6.dp
+    val spacing = 7.dp
 
     Column(
         modifier = modifier,
@@ -721,287 +543,304 @@ fun ScientificKeypadGrid(
     ) {
         // Scientific Row 1: [ DEG/RAD ] | [ sin ] | [ cos ] | [ tan ] | [ log ]
         Row(
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier
+                .fillMaxWidth()
+                .weight(1f),
             horizontalArrangement = Arrangement.spacedBy(spacing)
         ) {
             CalculatorKeyButton(
                 key = CalculatorKey.AngleModeToggle,
                 keyType = KeyType.SCIENTIFIC,
+                isActiveOperator = isDegMode,
                 customLabel = if (isDegMode) "DEG" else "RAD",
-                onClick = { onKeyClick(CalculatorKey.AngleModeToggle) },
+                onClick = { view -> onKeyClick(CalculatorKey.AngleModeToggle, view) },
                 isDarkTheme = isDarkTheme,
-                modifier = Modifier.weight(1f).height(sciKeyHeight)
+                modifier = Modifier.weight(1f)
             )
             CalculatorKeyButton(
                 key = CalculatorKey.Sin,
                 keyType = KeyType.SCIENTIFIC,
-                onClick = { onKeyClick(CalculatorKey.Sin) },
+                onClick = { view -> onKeyClick(CalculatorKey.Sin, view) },
                 isDarkTheme = isDarkTheme,
-                modifier = Modifier.weight(1f).height(sciKeyHeight)
+                modifier = Modifier.weight(1f)
             )
             CalculatorKeyButton(
                 key = CalculatorKey.Cos,
                 keyType = KeyType.SCIENTIFIC,
-                onClick = { onKeyClick(CalculatorKey.Cos) },
+                onClick = { view -> onKeyClick(CalculatorKey.Cos, view) },
                 isDarkTheme = isDarkTheme,
-                modifier = Modifier.weight(1f).height(sciKeyHeight)
+                modifier = Modifier.weight(1f)
             )
             CalculatorKeyButton(
                 key = CalculatorKey.Tan,
                 keyType = KeyType.SCIENTIFIC,
-                onClick = { onKeyClick(CalculatorKey.Tan) },
+                onClick = { view -> onKeyClick(CalculatorKey.Tan, view) },
                 isDarkTheme = isDarkTheme,
-                modifier = Modifier.weight(1f).height(sciKeyHeight)
+                modifier = Modifier.weight(1f)
             )
             CalculatorKeyButton(
                 key = CalculatorKey.Log,
                 keyType = KeyType.SCIENTIFIC,
-                onClick = { onKeyClick(CalculatorKey.Log) },
+                onClick = { view -> onKeyClick(CalculatorKey.Log, view) },
                 isDarkTheme = isDarkTheme,
-                modifier = Modifier.weight(1f).height(sciKeyHeight)
+                modifier = Modifier.weight(1f)
             )
         }
 
         // Scientific Row 2: [ ln ] | [ √ ] | [ x² ] | [ xʸ ] | [ π ]
         Row(
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier
+                .fillMaxWidth()
+                .weight(1f),
             horizontalArrangement = Arrangement.spacedBy(spacing)
         ) {
             CalculatorKeyButton(
                 key = CalculatorKey.Ln,
                 keyType = KeyType.SCIENTIFIC,
-                onClick = { onKeyClick(CalculatorKey.Ln) },
+                onClick = { view -> onKeyClick(CalculatorKey.Ln, view) },
                 isDarkTheme = isDarkTheme,
-                modifier = Modifier.weight(1f).height(sciKeyHeight)
+                modifier = Modifier.weight(1f)
             )
             CalculatorKeyButton(
                 key = CalculatorKey.SquareRoot,
                 keyType = KeyType.SCIENTIFIC,
-                onClick = { onKeyClick(CalculatorKey.SquareRoot) },
+                onClick = { view -> onKeyClick(CalculatorKey.SquareRoot, view) },
                 isDarkTheme = isDarkTheme,
-                modifier = Modifier.weight(1f).height(sciKeyHeight)
+                modifier = Modifier.weight(1f)
             )
             CalculatorKeyButton(
                 key = CalculatorKey.Square,
                 keyType = KeyType.SCIENTIFIC,
-                onClick = { onKeyClick(CalculatorKey.Square) },
+                onClick = { view -> onKeyClick(CalculatorKey.Square, view) },
                 isDarkTheme = isDarkTheme,
-                modifier = Modifier.weight(1f).height(sciKeyHeight)
+                modifier = Modifier.weight(1f)
             )
             CalculatorKeyButton(
                 key = CalculatorKey.Power,
                 keyType = KeyType.SCIENTIFIC,
                 isActiveOperator = activeOperator == "^",
-                onClick = { onKeyClick(CalculatorKey.Power) },
+                onClick = { view -> onKeyClick(CalculatorKey.Power, view) },
                 isDarkTheme = isDarkTheme,
-                modifier = Modifier.weight(1f).height(sciKeyHeight)
+                modifier = Modifier.weight(1f)
             )
             CalculatorKeyButton(
                 key = CalculatorKey.Pi,
                 keyType = KeyType.SCIENTIFIC,
-                onClick = { onKeyClick(CalculatorKey.Pi) },
+                onClick = { view -> onKeyClick(CalculatorKey.Pi, view) },
                 isDarkTheme = isDarkTheme,
-                modifier = Modifier.weight(1f).height(sciKeyHeight)
+                modifier = Modifier.weight(1f)
             )
         }
 
         // Row 1: [ AC ] | [ ⌫ ] | [ % ] | [ ÷ ] (Operator on the RIGHT)
         Row(
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier
+                .fillMaxWidth()
+                .weight(1.15f),
             horizontalArrangement = Arrangement.spacedBy(spacing)
         ) {
             CalculatorKeyButton(
                 key = CalculatorKey.AllClear,
                 keyType = KeyType.UTILITY,
-                onClick = { onKeyClick(CalculatorKey.AllClear) },
+                onClick = { view -> onKeyClick(CalculatorKey.AllClear, view) },
                 isDarkTheme = isDarkTheme,
-                modifier = Modifier.weight(1f).height(numKeyHeight)
+                modifier = Modifier.weight(1f)
             )
             CalculatorKeyButton(
                 key = CalculatorKey.Backspace,
                 keyType = KeyType.UTILITY,
-                onClick = { onKeyClick(CalculatorKey.Backspace) },
+                onClick = { view -> onKeyClick(CalculatorKey.Backspace, view) },
                 isDarkTheme = isDarkTheme,
-                modifier = Modifier.weight(1f).height(numKeyHeight)
+                modifier = Modifier.weight(1f)
             )
             CalculatorKeyButton(
                 key = CalculatorKey.Percent,
                 keyType = KeyType.UTILITY,
-                onClick = { onKeyClick(CalculatorKey.Percent) },
+                onClick = { view -> onKeyClick(CalculatorKey.Percent, view) },
                 isDarkTheme = isDarkTheme,
-                modifier = Modifier.weight(1f).height(numKeyHeight)
+                modifier = Modifier.weight(1f)
             )
             CalculatorKeyButton(
                 key = CalculatorKey.Divide,
                 keyType = KeyType.OPERATOR,
                 isActiveOperator = activeOperator == "÷" || activeOperator == "/",
-                onClick = { onKeyClick(CalculatorKey.Divide) },
+                onClick = { view -> onKeyClick(CalculatorKey.Divide, view) },
                 isDarkTheme = isDarkTheme,
-                modifier = Modifier.weight(1f).height(numKeyHeight)
+                modifier = Modifier.weight(1f)
             )
         }
 
         // Row 2: [ 7 ] | [ 8 ] | [ 9 ] | [ × ] (Operator on the RIGHT)
         Row(
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier
+                .fillMaxWidth()
+                .weight(1.15f),
             horizontalArrangement = Arrangement.spacedBy(spacing)
         ) {
             CalculatorKeyButton(
                 key = CalculatorKey.Digit("7"),
                 keyType = KeyType.NUMBER,
-                onClick = { onKeyClick(CalculatorKey.Digit("7")) },
+                onClick = { view -> onKeyClick(CalculatorKey.Digit("7"), view) },
                 isDarkTheme = isDarkTheme,
-                modifier = Modifier.weight(1f).height(numKeyHeight)
+                modifier = Modifier.weight(1f)
             )
             CalculatorKeyButton(
                 key = CalculatorKey.Digit("8"),
                 keyType = KeyType.NUMBER,
-                onClick = { onKeyClick(CalculatorKey.Digit("8")) },
+                onClick = { view -> onKeyClick(CalculatorKey.Digit("8"), view) },
                 isDarkTheme = isDarkTheme,
-                modifier = Modifier.weight(1f).height(numKeyHeight)
+                modifier = Modifier.weight(1f)
             )
             CalculatorKeyButton(
                 key = CalculatorKey.Digit("9"),
                 keyType = KeyType.NUMBER,
-                onClick = { onKeyClick(CalculatorKey.Digit("9")) },
+                onClick = { view -> onKeyClick(CalculatorKey.Digit("9"), view) },
                 isDarkTheme = isDarkTheme,
-                modifier = Modifier.weight(1f).height(numKeyHeight)
+                modifier = Modifier.weight(1f)
             )
             CalculatorKeyButton(
                 key = CalculatorKey.Multiply,
                 keyType = KeyType.OPERATOR,
                 isActiveOperator = activeOperator == "×" || activeOperator == "*",
-                onClick = { onKeyClick(CalculatorKey.Multiply) },
+                onClick = { view -> onKeyClick(CalculatorKey.Multiply, view) },
                 isDarkTheme = isDarkTheme,
-                modifier = Modifier.weight(1f).height(numKeyHeight)
+                modifier = Modifier.weight(1f)
             )
         }
 
         // Row 3: [ 4 ] | [ 5 ] | [ 6 ] | [ − ] (Operator on the RIGHT)
         Row(
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier
+                .fillMaxWidth()
+                .weight(1.15f),
             horizontalArrangement = Arrangement.spacedBy(spacing)
         ) {
             CalculatorKeyButton(
                 key = CalculatorKey.Digit("4"),
                 keyType = KeyType.NUMBER,
-                onClick = { onKeyClick(CalculatorKey.Digit("4")) },
+                onClick = { view -> onKeyClick(CalculatorKey.Digit("4"), view) },
                 isDarkTheme = isDarkTheme,
-                modifier = Modifier.weight(1f).height(numKeyHeight)
+                modifier = Modifier.weight(1f)
             )
             CalculatorKeyButton(
                 key = CalculatorKey.Digit("5"),
                 keyType = KeyType.NUMBER,
-                onClick = { onKeyClick(CalculatorKey.Digit("5")) },
+                onClick = { view -> onKeyClick(CalculatorKey.Digit("5"), view) },
                 isDarkTheme = isDarkTheme,
-                modifier = Modifier.weight(1f).height(numKeyHeight)
+                modifier = Modifier.weight(1f)
             )
             CalculatorKeyButton(
                 key = CalculatorKey.Digit("6"),
                 keyType = KeyType.NUMBER,
-                onClick = { onKeyClick(CalculatorKey.Digit("6")) },
+                onClick = { view -> onKeyClick(CalculatorKey.Digit("6"), view) },
                 isDarkTheme = isDarkTheme,
-                modifier = Modifier.weight(1f).height(numKeyHeight)
+                modifier = Modifier.weight(1f)
             )
             CalculatorKeyButton(
                 key = CalculatorKey.Subtract,
                 keyType = KeyType.OPERATOR,
                 isActiveOperator = activeOperator == "−" || activeOperator == "-",
-                onClick = { onKeyClick(CalculatorKey.Subtract) },
+                onClick = { view -> onKeyClick(CalculatorKey.Subtract, view) },
                 isDarkTheme = isDarkTheme,
-                modifier = Modifier.weight(1f).height(numKeyHeight)
+                modifier = Modifier.weight(1f)
             )
         }
 
         // Row 4: [ 1 ] | [ 2 ] | [ 3 ] | [ + ] (Operator on the RIGHT)
         Row(
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier
+                .fillMaxWidth()
+                .weight(1.15f),
             horizontalArrangement = Arrangement.spacedBy(spacing)
         ) {
             CalculatorKeyButton(
                 key = CalculatorKey.Digit("1"),
                 keyType = KeyType.NUMBER,
-                onClick = { onKeyClick(CalculatorKey.Digit("1")) },
+                onClick = { view -> onKeyClick(CalculatorKey.Digit("1"), view) },
                 isDarkTheme = isDarkTheme,
-                modifier = Modifier.weight(1f).height(numKeyHeight)
+                modifier = Modifier.weight(1f)
             )
             CalculatorKeyButton(
                 key = CalculatorKey.Digit("2"),
                 keyType = KeyType.NUMBER,
-                onClick = { onKeyClick(CalculatorKey.Digit("2")) },
+                onClick = { view -> onKeyClick(CalculatorKey.Digit("2"), view) },
                 isDarkTheme = isDarkTheme,
-                modifier = Modifier.weight(1f).height(numKeyHeight)
+                modifier = Modifier.weight(1f)
             )
             CalculatorKeyButton(
                 key = CalculatorKey.Digit("3"),
                 keyType = KeyType.NUMBER,
-                onClick = { onKeyClick(CalculatorKey.Digit("3")) },
+                onClick = { view -> onKeyClick(CalculatorKey.Digit("3"), view) },
                 isDarkTheme = isDarkTheme,
-                modifier = Modifier.weight(1f).height(numKeyHeight)
+                modifier = Modifier.weight(1f)
             )
             CalculatorKeyButton(
                 key = CalculatorKey.Add,
                 keyType = KeyType.OPERATOR,
                 isActiveOperator = activeOperator == "+",
-                onClick = { onKeyClick(CalculatorKey.Add) },
+                onClick = { view -> onKeyClick(CalculatorKey.Add, view) },
                 isDarkTheme = isDarkTheme,
-                modifier = Modifier.weight(1f).height(numKeyHeight)
+                modifier = Modifier.weight(1f)
             )
         }
 
         // Row 5: [ ± ] | [ e ] | [ 0 ] | [ 1/x ]
         Row(
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier
+                .fillMaxWidth()
+                .weight(1.15f),
             horizontalArrangement = Arrangement.spacedBy(spacing)
         ) {
             CalculatorKeyButton(
                 key = CalculatorKey.PlusMinus,
                 keyType = KeyType.UTILITY,
-                onClick = { onKeyClick(CalculatorKey.PlusMinus) },
+                onClick = { view -> onKeyClick(CalculatorKey.PlusMinus, view) },
                 isDarkTheme = isDarkTheme,
-                modifier = Modifier.weight(1f).height(numKeyHeight)
+                modifier = Modifier.weight(1f)
             )
             CalculatorKeyButton(
                 key = CalculatorKey.EulerE,
                 keyType = KeyType.SCIENTIFIC,
-                onClick = { onKeyClick(CalculatorKey.EulerE) },
+                onClick = { view -> onKeyClick(CalculatorKey.EulerE, view) },
                 isDarkTheme = isDarkTheme,
-                modifier = Modifier.weight(1f).height(numKeyHeight)
+                modifier = Modifier.weight(1f)
             )
             CalculatorKeyButton(
                 key = CalculatorKey.Digit("0"),
                 keyType = KeyType.NUMBER,
-                onClick = { onKeyClick(CalculatorKey.Digit("0")) },
+                onClick = { view -> onKeyClick(CalculatorKey.Digit("0"), view) },
                 isDarkTheme = isDarkTheme,
-                modifier = Modifier.weight(1f).height(numKeyHeight)
+                modifier = Modifier.weight(1f)
             )
             CalculatorKeyButton(
                 key = CalculatorKey.Inverse,
                 keyType = KeyType.SCIENTIFIC,
-                onClick = { onKeyClick(CalculatorKey.Inverse) },
+                onClick = { view -> onKeyClick(CalculatorKey.Inverse, view) },
                 isDarkTheme = isDarkTheme,
-                modifier = Modifier.weight(1f).height(numKeyHeight)
+                modifier = Modifier.weight(1f)
             )
         }
 
-        // Row 6: [ . ] (weight 1) | [ = ] (weight 3 - rightmost equal result action)
+        // Row 6: [ . ] (weight 1) | [ = ] (weight 3 - prominent equal result action with uniform shading)
         Row(
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier
+                .fillMaxWidth()
+                .weight(1.15f),
             horizontalArrangement = Arrangement.spacedBy(spacing)
         ) {
             CalculatorKeyButton(
                 key = CalculatorKey.DecimalDot,
                 keyType = KeyType.NUMBER,
-                onClick = { onKeyClick(CalculatorKey.DecimalDot) },
+                onClick = { view -> onKeyClick(CalculatorKey.DecimalDot, view) },
                 isDarkTheme = isDarkTheme,
-                modifier = Modifier.weight(1f).height(numKeyHeight)
+                modifier = Modifier.weight(1f)
             )
             CalculatorKeyButton(
                 key = CalculatorKey.Equals,
                 keyType = KeyType.EQUALS,
-                onClick = { onKeyClick(CalculatorKey.Equals) },
+                onClick = { view -> onKeyClick(CalculatorKey.Equals, view) },
                 isDarkTheme = isDarkTheme,
-                modifier = Modifier.weight(3f).height(numKeyHeight)
+                modifier = Modifier.weight(3f)
             )
         }
     }

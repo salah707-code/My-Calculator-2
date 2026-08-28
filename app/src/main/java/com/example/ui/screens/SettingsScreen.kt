@@ -20,19 +20,27 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.ArrowForward
+import androidx.compose.material.icons.filled.Calculate
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.ColorLens
 import androidx.compose.material.icons.filled.DarkMode
 import androidx.compose.material.icons.filled.DeleteSweep
 import androidx.compose.material.icons.filled.FormatListNumbered
+import androidx.compose.material.icons.filled.Functions
+import androidx.compose.material.icons.filled.History
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Language
+import androidx.compose.material.icons.filled.SwapHoriz
+import androidx.compose.material.icons.filled.SwitchAccessShortcut
 import androidx.compose.material.icons.filled.LightMode
 import androidx.compose.material.icons.filled.Palette
 import androidx.compose.material.icons.filled.SettingsBrightness
 import androidx.compose.material.icons.filled.TouchApp
 import androidx.compose.material.icons.filled.VolumeUp
 import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -41,6 +49,7 @@ import androidx.compose.material3.FilterChipDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Switch
 import androidx.compose.material3.SwitchDefaults
@@ -67,6 +76,7 @@ import com.example.R
 import com.example.model.AccentColor
 import com.example.model.AppLanguage
 import com.example.model.AppTheme
+import com.example.model.CalculatorMode
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -77,12 +87,18 @@ fun SettingsScreen(
     hapticEnabled: Boolean,
     soundEnabled: Boolean,
     thousandsSeparatorEnabled: Boolean,
+    calculatorMode: CalculatorMode,
+    isDegMode: Boolean,
     onThemeChange: (AppTheme) -> Unit,
     onAccentColorChange: (AccentColor) -> Unit,
     onLanguageChange: (AppLanguage) -> Unit,
     onHapticChange: (Boolean) -> Unit,
     onSoundChange: (Boolean) -> Unit,
     onThousandsSeparatorChange: (Boolean) -> Unit,
+    onModeChange: (CalculatorMode) -> Unit,
+    onToggleDegMode: () -> Unit,
+    onOpenHistory: () -> Unit,
+    onOpenUnitConverter: () -> Unit = {},
     onClearAllHistory: () -> Unit,
     onBack: () -> Unit,
     modifier: Modifier = Modifier
@@ -130,7 +146,8 @@ fun SettingsScreen(
                 title = {
                     Text(
                         text = stringResource(R.string.settings_title),
-                        fontWeight = FontWeight.Bold
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 20.sp
                     )
                 },
                 navigationIcon = {
@@ -159,29 +176,223 @@ fun SettingsScreen(
                 .padding(innerPadding)
                 .verticalScroll(rememberScrollState())
                 .padding(horizontal = 16.dp, vertical = 8.dp),
-            verticalArrangement = Arrangement.spacedBy(18.dp)
+            verticalArrangement = Arrangement.spacedBy(20.dp)
         ) {
-            // Theme Section
+            // 1. Calculator Mode & Mathematical Precision Section
+            SettingsSectionHeader(
+                icon = Icons.Default.Calculate,
+                title = stringResource(R.string.settings_calc_mode_section)
+            )
+
+            Card(
+                shape = RoundedCornerShape(20.dp),
+                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant),
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Column(modifier = Modifier.padding(16.dp)) {
+                    Text(
+                        text = stringResource(R.string.settings_calc_mode_desc),
+                        fontSize = 13.sp,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.85f)
+                    )
+
+                    Spacer(modifier = Modifier.height(12.dp))
+
+                    // Mode Selection Chips: Basic vs Scientific
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(10.dp)
+                    ) {
+                        ModeSelectionCard(
+                            title = stringResource(R.string.mode_basic),
+                            description = stringResource(R.string.mode_basic_desc),
+                            icon = Icons.Default.Calculate,
+                            selected = calculatorMode == CalculatorMode.BASIC,
+                            onClick = { onModeChange(CalculatorMode.BASIC) },
+                            modifier = Modifier.weight(1f)
+                        )
+
+                        ModeSelectionCard(
+                            title = stringResource(R.string.mode_scientific),
+                            description = stringResource(R.string.mode_scientific_desc),
+                            icon = Icons.Default.Functions,
+                            selected = calculatorMode == CalculatorMode.SCIENTIFIC,
+                            onClick = { onModeChange(CalculatorMode.SCIENTIFIC) },
+                            modifier = Modifier.weight(1f)
+                        )
+                    }
+
+                    if (calculatorMode == CalculatorMode.SCIENTIFIC) {
+                        Spacer(modifier = Modifier.height(14.dp))
+
+                        // Angle Unit Toggle (DEG vs RAD)
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .clip(RoundedCornerShape(12.dp))
+                                .background(MaterialTheme.colorScheme.surface.copy(alpha = 0.6f))
+                                .clickable { onToggleDegMode() }
+                                .padding(horizontal = 14.dp, vertical = 10.dp),
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Column {
+                                Text(
+                                    text = stringResource(R.string.settings_angle_unit),
+                                    fontSize = 14.sp,
+                                    fontWeight = FontWeight.SemiBold,
+                                    color = MaterialTheme.colorScheme.onSurface
+                                )
+                                Text(
+                                    text = if (isDegMode) stringResource(R.string.settings_angle_deg_desc) else stringResource(R.string.settings_angle_rad_desc),
+                                    fontSize = 12.sp,
+                                    color = MaterialTheme.colorScheme.primary
+                                )
+                            }
+
+                            Box(
+                                modifier = Modifier
+                                    .clip(RoundedCornerShape(8.dp))
+                                    .background(MaterialTheme.colorScheme.primary)
+                                    .padding(horizontal = 12.dp, vertical = 6.dp)
+                            ) {
+                                Text(
+                                    text = if (isDegMode) "DEG" else "RAD",
+                                    fontSize = 13.sp,
+                                    fontWeight = FontWeight.Bold,
+                                    color = MaterialTheme.colorScheme.onPrimary
+                                )
+                            }
+                        }
+                    }
+                }
+            }
+
+            // 2. Calculation History Log Section
+            SettingsSectionHeader(
+                icon = Icons.Default.History,
+                title = stringResource(R.string.settings_history_section)
+            )
+
+            Card(
+                shape = RoundedCornerShape(20.dp),
+                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant),
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Column(modifier = Modifier.padding(16.dp)) {
+                    Text(
+                        text = stringResource(R.string.settings_history_card_desc),
+                        fontSize = 13.sp,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.85f)
+                    )
+
+                    Spacer(modifier = Modifier.height(14.dp))
+
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(10.dp)
+                    ) {
+                        Button(
+                            onClick = onOpenHistory,
+                            shape = RoundedCornerShape(12.dp),
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = MaterialTheme.colorScheme.primary,
+                                contentColor = MaterialTheme.colorScheme.onPrimary
+                            ),
+                            modifier = Modifier
+                                .weight(1f)
+                                .testTag("btn_settings_open_history")
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.History,
+                                contentDescription = null,
+                                modifier = Modifier.size(18.dp)
+                            )
+                            Spacer(modifier = Modifier.width(8.dp))
+                            Text(
+                                text = stringResource(R.string.settings_view_history_btn),
+                                fontWeight = FontWeight.Bold,
+                                fontSize = 14.sp
+                            )
+                        }
+
+                        OutlinedButton(
+                            onClick = { showClearHistoryDialog = true },
+                            shape = RoundedCornerShape(12.dp),
+                            border = BorderStroke(1.dp, MaterialTheme.colorScheme.error.copy(alpha = 0.6f)),
+                            colors = ButtonDefaults.outlinedButtonColors(
+                                contentColor = MaterialTheme.colorScheme.error
+                            ),
+                            modifier = Modifier.testTag("btn_settings_clear_history_quick")
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.DeleteSweep,
+                                contentDescription = null,
+                                modifier = Modifier.size(18.dp)
+                            )
+                        }
+                    }
+                }
+            }
+
+            // 3. Quick Tools & Unit Converter Section
+            SettingsSectionHeader(
+                icon = Icons.Default.SwapHoriz,
+                title = stringResource(R.string.settings_tools_section)
+            )
+
+            Card(
+                shape = RoundedCornerShape(20.dp),
+                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant),
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Column(modifier = Modifier.padding(16.dp)) {
+                    Text(
+                        text = stringResource(R.string.settings_unit_converter_desc),
+                        fontSize = 13.sp,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.85f)
+                    )
+
+                    Spacer(modifier = Modifier.height(14.dp))
+
+                    Button(
+                        onClick = onOpenUnitConverter,
+                        shape = RoundedCornerShape(12.dp),
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = MaterialTheme.colorScheme.primary,
+                            contentColor = MaterialTheme.colorScheme.onPrimary
+                        ),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .testTag("btn_settings_open_unit_converter")
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.SwapHoriz,
+                            contentDescription = null,
+                            modifier = Modifier.size(20.dp)
+                        )
+                        Spacer(modifier = Modifier.width(8.dp))
+                        Text(
+                            text = stringResource(R.string.settings_open_unit_converter),
+                            fontWeight = FontWeight.Bold,
+                            fontSize = 14.sp
+                        )
+                    }
+                }
+            }
+
+            // 4. Theme & Appearance Section
             SettingsSectionHeader(
                 icon = Icons.Default.Palette,
                 title = stringResource(R.string.settings_appearance_section)
             )
 
             Card(
-                shape = RoundedCornerShape(18.dp),
+                shape = RoundedCornerShape(20.dp),
                 colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant),
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Column(modifier = Modifier.padding(16.dp)) {
-                    Text(
-                        text = stringResource(R.string.settings_appearance_section),
-                        fontSize = 15.sp,
-                        fontWeight = FontWeight.Medium,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                    )
-
-                    Spacer(modifier = Modifier.height(12.dp))
-
                     // Row 1: SYSTEM, LIGHT, DARK
                     Row(
                         modifier = Modifier.fillMaxWidth(),
@@ -246,14 +457,100 @@ fun SettingsScreen(
                 }
             }
 
-            // Language Section
+            // 4. Accent Color Customization Section
+            SettingsSectionHeader(
+                icon = Icons.Default.ColorLens,
+                title = stringResource(R.string.settings_accent_color)
+            )
+
+            Card(
+                shape = RoundedCornerShape(20.dp),
+                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant),
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Column(modifier = Modifier.padding(16.dp)) {
+                    Text(
+                        text = stringResource(R.string.settings_accent_color_desc),
+                        fontSize = 13.sp,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.85f)
+                    )
+
+                    Spacer(modifier = Modifier.height(14.dp))
+
+                    // Row 1: BLUE, CYAN, EMERALD, AMBER
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(6.dp)
+                    ) {
+                        AccentColorOptionCard(
+                            accent = AccentColor.BLUE,
+                            selected = currentAccentColor == AccentColor.BLUE,
+                            onClick = { onAccentColorChange(AccentColor.BLUE) },
+                            modifier = Modifier.weight(1f)
+                        )
+                        AccentColorOptionCard(
+                            accent = AccentColor.CYAN,
+                            selected = currentAccentColor == AccentColor.CYAN,
+                            onClick = { onAccentColorChange(AccentColor.CYAN) },
+                            modifier = Modifier.weight(1f)
+                        )
+                        AccentColorOptionCard(
+                            accent = AccentColor.EMERALD,
+                            selected = currentAccentColor == AccentColor.EMERALD,
+                            onClick = { onAccentColorChange(AccentColor.EMERALD) },
+                            modifier = Modifier.weight(1f)
+                        )
+                        AccentColorOptionCard(
+                            accent = AccentColor.AMBER,
+                            selected = currentAccentColor == AccentColor.AMBER,
+                            onClick = { onAccentColorChange(AccentColor.AMBER) },
+                            modifier = Modifier.weight(1f)
+                        )
+                    }
+
+                    Spacer(modifier = Modifier.height(8.dp))
+
+                    // Row 2: PURPLE, ORANGE, ROSE, TEAL
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(6.dp)
+                    ) {
+                        AccentColorOptionCard(
+                            accent = AccentColor.PURPLE,
+                            selected = currentAccentColor == AccentColor.PURPLE,
+                            onClick = { onAccentColorChange(AccentColor.PURPLE) },
+                            modifier = Modifier.weight(1f)
+                        )
+                        AccentColorOptionCard(
+                            accent = AccentColor.ORANGE,
+                            selected = currentAccentColor == AccentColor.ORANGE,
+                            onClick = { onAccentColorChange(AccentColor.ORANGE) },
+                            modifier = Modifier.weight(1f)
+                        )
+                        AccentColorOptionCard(
+                            accent = AccentColor.ROSE,
+                            selected = currentAccentColor == AccentColor.ROSE,
+                            onClick = { onAccentColorChange(AccentColor.ROSE) },
+                            modifier = Modifier.weight(1f)
+                        )
+                        AccentColorOptionCard(
+                            accent = AccentColor.TEAL,
+                            selected = currentAccentColor == AccentColor.TEAL,
+                            onClick = { onAccentColorChange(AccentColor.TEAL) },
+                            modifier = Modifier.weight(1f)
+                        )
+                    }
+                }
+            }
+
+            // 5. Language Section
             SettingsSectionHeader(
                 icon = Icons.Default.Language,
                 title = stringResource(R.string.settings_language_section)
             )
 
             Card(
-                shape = RoundedCornerShape(18.dp),
+                shape = RoundedCornerShape(20.dp),
                 colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant),
                 modifier = Modifier.fillMaxWidth()
             ) {
@@ -286,88 +583,14 @@ fun SettingsScreen(
                 }
             }
 
-            // Accent Color Customization Section
-            SettingsSectionHeader(
-                icon = Icons.Default.ColorLens,
-                title = stringResource(R.string.settings_accent_color)
-            )
-
-            Card(
-                shape = RoundedCornerShape(18.dp),
-                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant),
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                Column(modifier = Modifier.padding(16.dp)) {
-                    Text(
-                        text = stringResource(R.string.settings_accent_color_desc),
-                        fontSize = 13.sp,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.85f)
-                    )
-
-                    Spacer(modifier = Modifier.height(14.dp))
-
-                    // Row 1: BLUE, EMERALD, PURPLE
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.spacedBy(8.dp)
-                    ) {
-                        AccentColorOptionCard(
-                            accent = AccentColor.BLUE,
-                            selected = currentAccentColor == AccentColor.BLUE,
-                            onClick = { onAccentColorChange(AccentColor.BLUE) },
-                            modifier = Modifier.weight(1f)
-                        )
-                        AccentColorOptionCard(
-                            accent = AccentColor.EMERALD,
-                            selected = currentAccentColor == AccentColor.EMERALD,
-                            onClick = { onAccentColorChange(AccentColor.EMERALD) },
-                            modifier = Modifier.weight(1f)
-                        )
-                        AccentColorOptionCard(
-                            accent = AccentColor.PURPLE,
-                            selected = currentAccentColor == AccentColor.PURPLE,
-                            onClick = { onAccentColorChange(AccentColor.PURPLE) },
-                            modifier = Modifier.weight(1f)
-                        )
-                    }
-
-                    Spacer(modifier = Modifier.height(8.dp))
-
-                    // Row 2: ORANGE, ROSE, TEAL
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.spacedBy(8.dp)
-                    ) {
-                        AccentColorOptionCard(
-                            accent = AccentColor.ORANGE,
-                            selected = currentAccentColor == AccentColor.ORANGE,
-                            onClick = { onAccentColorChange(AccentColor.ORANGE) },
-                            modifier = Modifier.weight(1f)
-                        )
-                        AccentColorOptionCard(
-                            accent = AccentColor.ROSE,
-                            selected = currentAccentColor == AccentColor.ROSE,
-                            onClick = { onAccentColorChange(AccentColor.ROSE) },
-                            modifier = Modifier.weight(1f)
-                        )
-                        AccentColorOptionCard(
-                            accent = AccentColor.TEAL,
-                            selected = currentAccentColor == AccentColor.TEAL,
-                            onClick = { onAccentColorChange(AccentColor.TEAL) },
-                            modifier = Modifier.weight(1f)
-                        )
-                    }
-                }
-            }
-
-            // Feedback & Sound Section
+            // 6. Feedback, Sound & Formatting Section
             SettingsSectionHeader(
                 icon = Icons.Default.TouchApp,
                 title = stringResource(R.string.settings_feedback_section)
             )
 
             Card(
-                shape = RoundedCornerShape(18.dp),
+                shape = RoundedCornerShape(20.dp),
                 colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant),
                 modifier = Modifier.fillMaxWidth()
             ) {
@@ -401,57 +624,14 @@ fun SettingsScreen(
                 }
             }
 
-            // Data Management Section
-            SettingsSectionHeader(
-                icon = Icons.Default.DeleteSweep,
-                title = stringResource(R.string.settings_data_section)
-            )
-
-            Card(
-                shape = RoundedCornerShape(18.dp),
-                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant),
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .clickable { showClearHistoryDialog = true }
-                        .padding(16.dp),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Column(modifier = Modifier.weight(1f)) {
-                        Text(
-                            text = stringResource(R.string.clear_history),
-                            fontSize = 16.sp,
-                            fontWeight = FontWeight.SemiBold,
-                            color = MaterialTheme.colorScheme.error
-                        )
-                        Spacer(modifier = Modifier.height(4.dp))
-                        Text(
-                            text = stringResource(R.string.settings_clear_history_desc),
-                            fontSize = 13.sp,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.8f)
-                        )
-                    }
-
-                    Icon(
-                        imageVector = Icons.Default.DeleteSweep,
-                        contentDescription = null,
-                        tint = MaterialTheme.colorScheme.error,
-                        modifier = Modifier.size(24.dp)
-                    )
-                }
-            }
-
-            // About Section
+            // 7. About Section
             SettingsSectionHeader(
                 icon = Icons.Default.Info,
                 title = stringResource(R.string.settings_about_section)
             )
 
             Card(
-                shape = RoundedCornerShape(18.dp),
+                shape = RoundedCornerShape(20.dp),
                 colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant),
                 modifier = Modifier.fillMaxWidth()
             ) {
@@ -469,7 +649,7 @@ fun SettingsScreen(
                         )
 
                         Text(
-                            text = "${stringResource(R.string.app_version)}",
+                            text = "v${stringResource(R.string.app_version)}",
                             fontSize = 13.sp,
                             fontWeight = FontWeight.Medium,
                             color = MaterialTheme.colorScheme.onSurfaceVariant
@@ -488,6 +668,87 @@ fun SettingsScreen(
             }
 
             Spacer(modifier = Modifier.height(24.dp))
+        }
+    }
+}
+
+@Composable
+fun ModeSelectionCard(
+    title: String,
+    description: String,
+    icon: ImageVector,
+    selected: Boolean,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    val backgroundColor = if (selected) {
+        MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.7f)
+    } else {
+        MaterialTheme.colorScheme.surface.copy(alpha = 0.5f)
+    }
+
+    Card(
+        onClick = onClick,
+        shape = RoundedCornerShape(16.dp),
+        colors = CardDefaults.cardColors(containerColor = backgroundColor),
+        border = BorderStroke(
+            if (selected) 2.dp else 1.dp,
+            if (selected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.outline.copy(alpha = 0.2f)
+        ),
+        modifier = modifier
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(12.dp)
+        ) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Icon(
+                    imageVector = icon,
+                    contentDescription = null,
+                    tint = if (selected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.size(22.dp)
+                )
+
+                if (selected) {
+                    Box(
+                        modifier = Modifier
+                            .size(20.dp)
+                            .clip(CircleShape)
+                            .background(MaterialTheme.colorScheme.primary),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Check,
+                            contentDescription = null,
+                            tint = MaterialTheme.colorScheme.onPrimary,
+                            modifier = Modifier.size(14.dp)
+                        )
+                    }
+                }
+            }
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            Text(
+                text = title,
+                fontSize = 15.sp,
+                fontWeight = FontWeight.Bold,
+                color = if (selected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface
+            )
+
+            Spacer(modifier = Modifier.height(4.dp))
+
+            Text(
+                text = description,
+                fontSize = 11.sp,
+                color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.85f),
+                lineHeight = 15.sp
+            )
         }
     }
 }
@@ -706,6 +967,3 @@ fun SettingsSwitchRow(
         )
     }
 }
-
-
-

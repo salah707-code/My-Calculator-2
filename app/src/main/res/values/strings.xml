@@ -41,18 +41,30 @@
     <string name="settings_accent_color">لون التمييز (Accent Color)</string>
     <string name="settings_accent_color_desc">تخصيص لون زر النتيجة والعناصر التفاعلية</string>
     <string name="accent_blue">الأزرق الملكي</string>
-    <string name="accent_emerald">الزمردي</string>
-    <string name="accent_purple">البنفسجي</string>
-    <string name="accent_orange">البرتقالي</string>
-    <string name="accent_rose">الوردي التوتي</string>
-    <string name="accent_teal">الفيروزي</string>
+    <string name="accent_cyan">السماوي المضيء</string>
+    <string name="accent_emerald">الزمردي النقي</string>
+    <string name="accent_amber">الكهرماني الذهبي</string>
+    <string name="accent_purple">البنفسجي الفاخر</string>
+    <string name="accent_orange">البرتقالي الدافئ</string>
+    <string name="accent_rose">الوردي المرجاني</string>
+    <string name="accent_teal">الفيروزي الأنيق</string>
     
     <!-- Calculator Modes -->
+    <string name="settings_calc_mode_section">وضع الحاسبة والحسابات</string>
+    <string name="settings_calc_mode_desc">اختر الوضع المناسب لاحتياجاتك الحسابية</string>
     <string name="mode_basic">أساسية</string>
     <string name="mode_scientific">علمية</string>
+    <string name="mode_basic_desc">واجهة مبسطة بأزرار ضخمة للعمليات اليومية</string>
+    <string name="mode_scientific_desc">دوال مثلثية، لوغاريتمات، جذور وأسس</string>
     <string name="mode_toggle_desc">التبديل بين الحاسبة الأساسية والعلمية</string>
-    <string name="angle_deg">DEG</string>
-    <string name="angle_rad">RAD</string>
+    <string name="settings_angle_unit">وحدة الزوايا</string>
+    <string name="settings_angle_deg_desc">الدرجات (Degrees)</string>
+    <string name="settings_angle_rad_desc">الراديان (Radians)</string>
+    <string name="angle_deg">DEG (درجات)</string>
+    <string name="angle_rad">RAD (راديان)</string>
+    <string name="settings_history_section">سجل العمليات السابقة</string>
+    <string name="settings_history_card_desc">عرض العمليات السابقة، نسخ النتائج أو إعادة استخدامها</string>
+    <string name="settings_view_history_btn">فتح سجل المحفوظات</string>
 
     <!-- Math Function Descriptions -->
     <string name="func_sqrt">جذر تربيعي (√)</string>
@@ -81,6 +93,29 @@
     <string name="settings_about_section">حول التطبيق</string>
     <string name="app_description">حاسبة يومية احترافية، سريعة، خفيفة، دقيقة ومجانية تعمل بدون إنترنت.</string>
     
+    <!-- Unit Converter Section & Tools -->
+    <string name="settings_tools_section">الأدوات والميزات السريعة</string>
+    <string name="settings_unit_converter_title">محول الوحدات والعملات السريع</string>
+    <string name="settings_unit_converter_desc">تحويل فوري للأطوال، الأوزان، العملات، درجات الحرارة، المساحات والسعات</string>
+    <string name="settings_open_unit_converter">فتح محول الوحدات</string>
+    <string name="unit_converter_title">محول الوحدات</string>
+    
+    <!-- Unit Categories -->
+    <string name="unit_cat_length">الأطوال</string>
+    <string name="unit_cat_weight">الوزن والكتلة</string>
+    <string name="unit_cat_currency">العملات</string>
+    <string name="unit_cat_temp">الحرارة</string>
+    <string name="unit_cat_area">المساحة</string>
+    <string name="unit_cat_volume">الحجم والسعة</string>
+
+    <!-- Unit Labels -->
+    <string name="unit_from">من</string>
+    <string name="unit_to">إلى</string>
+    <string name="unit_swap">تبديل الوحدات</string>
+    <string name="unit_use_in_calculator">استخدام في الحاسبة</string>
+    <string name="unit_conversion_rate">معدل التحويل الأساسي:</string>
+    <string name="unit_currency_notice">أسعار الصرف تقريبية للمقارنة والحسابات اليومية السريعة</string>
+
     <!-- Actions -->
     <string name="delete">حذف</string>
     <string name="cancel">إلغاء</string>

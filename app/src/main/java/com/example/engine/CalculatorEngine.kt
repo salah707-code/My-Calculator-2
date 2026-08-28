@@ -280,8 +280,10 @@ class CalculatorEngine(
                 if (mod360 == 0.0 || mod360 == 180.0) sinVal = 0.0
                 else if (mod360 == 90.0) sinVal = 1.0
                 else if (mod360 == 270.0) sinVal = -1.0
+                else if (mod360 == 30.0 || mod360 == 150.0) sinVal = 0.5
+                else if (mod360 == 210.0 || mod360 == 330.0) sinVal = -0.5
             }
-            BigDecimal(sinVal, mathContext).stripTrailingZeros()
+            BigDecimal.valueOf(sinVal).setScale(10, RoundingMode.HALF_UP).stripTrailingZeros()
         } catch (e: Exception) {
             isError = true
             errorMessage = invalidText
@@ -315,8 +317,10 @@ class CalculatorEngine(
                 if (mod360 == 90.0 || mod360 == 270.0) cosVal = 0.0
                 else if (mod360 == 0.0) cosVal = 1.0
                 else if (mod360 == 180.0) cosVal = -1.0
+                else if (mod360 == 60.0 || mod360 == 300.0) cosVal = 0.5
+                else if (mod360 == 120.0 || mod360 == 240.0) cosVal = -0.5
             }
-            BigDecimal(cosVal, mathContext).stripTrailingZeros()
+            BigDecimal.valueOf(cosVal).setScale(10, RoundingMode.HALF_UP).stripTrailingZeros()
         } catch (e: Exception) {
             isError = true
             errorMessage = invalidText
@@ -364,7 +368,7 @@ class CalculatorEngine(
                 errorMessage = invalidText
                 return
             }
-            BigDecimal(tanVal, mathContext).stripTrailingZeros()
+            BigDecimal.valueOf(tanVal).setScale(10, RoundingMode.HALF_UP).stripTrailingZeros()
         } catch (e: Exception) {
             isError = true
             errorMessage = invalidText

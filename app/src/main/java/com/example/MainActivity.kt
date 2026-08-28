@@ -32,13 +32,15 @@ import com.example.ui.CalculatorViewModel
 import com.example.ui.screens.CalculatorScreen
 import com.example.ui.screens.HistoryScreen
 import com.example.ui.screens.SettingsScreen
+import com.example.ui.screens.UnitConverterScreen
 import com.example.ui.theme.CalculatorTheme
 import java.util.Locale
 
 enum class CurrentDestination {
     CALCULATOR,
     HISTORY,
-    SETTINGS
+    SETTINGS,
+    UNIT_CONVERTER
 }
 
 class MainActivity : ComponentActivity() {
@@ -121,16 +123,8 @@ fun MainAppContent(viewModel: CalculatorViewModel) {
                 CalculatorScreen(
                     state = uiState,
                     currentTheme = themeMode,
-                    onKeyClick = { key -> viewModel.onKeyClicked(key) },
-                    onToggleMode = { viewModel.toggleScientificMode() },
-                    onToggleDegMode = { viewModel.toggleDegMode() },
-                    onOpenHistory = { currentDestination = CurrentDestination.HISTORY },
-                    onOpenSettings = { currentDestination = CurrentDestination.SETTINGS },
-                    onToggleTheme = {
-                        val themes = AppTheme.entries
-                        val nextIndex = (themes.indexOf(themeMode) + 1) % themes.size
-                        viewModel.setTheme(themes[nextIndex])
-                    }
+                    onKeyClick = { key, view -> viewModel.onKeyClicked(key, view) },
+                    onOpenSettings = { currentDestination = CurrentDestination.SETTINGS }
                 )
             }
             CurrentDestination.HISTORY -> {
@@ -153,17 +147,36 @@ fun MainAppContent(viewModel: CalculatorViewModel) {
                     hapticEnabled = hapticEnabled,
                     soundEnabled = soundEnabled,
                     thousandsSeparatorEnabled = thousandsSeparatorEnabled,
+                    calculatorMode = uiState.calculatorMode,
+                    isDegMode = uiState.isDegMode,
                     onThemeChange = { theme -> viewModel.setTheme(theme) },
                     onAccentColorChange = { accent -> viewModel.setAccentColor(accent) },
                     onLanguageChange = { lang -> viewModel.setLanguage(lang) },
                     onHapticChange = { enabled -> viewModel.setHaptic(enabled) },
                     onSoundChange = { enabled -> viewModel.setSound(enabled) },
                     onThousandsSeparatorChange = { enabled -> viewModel.setThousandsSeparator(enabled) },
+                    onModeChange = { mode -> viewModel.setCalculatorMode(mode) },
+                    onToggleDegMode = { viewModel.toggleDegMode() },
+                    onOpenHistory = { currentDestination = CurrentDestination.HISTORY },
+                    onOpenUnitConverter = { currentDestination = CurrentDestination.UNIT_CONVERTER },
                     onClearAllHistory = { viewModel.clearAllHistory() },
                     onBack = { currentDestination = CurrentDestination.CALCULATOR }
+                )
+            }
+            CurrentDestination.UNIT_CONVERTER -> {
+                UnitConverterScreen(
+                    currentTheme = themeMode,
+                    language = language,
+                    hapticEnabled = hapticEnabled,
+                    soundEnabled = soundEnabled,
+                    thousandsSeparatorEnabled = thousandsSeparatorEnabled,
+                    onBack = { currentDestination = CurrentDestination.SETTINGS },
+                    onUseResultInCalculator = { result ->
+                        viewModel.reuseResult(result)
+                        currentDestination = CurrentDestination.CALCULATOR
+                    }
                 )
             }
         }
     }
 }
-

@@ -25,7 +25,7 @@ class PreferencesRepository(context: Context) {
     private val _hapticEnabled = MutableStateFlow(prefs.getBoolean(KEY_HAPTIC, true))
     val hapticEnabled: StateFlow<Boolean> = _hapticEnabled.asStateFlow()
 
-    private val _soundEnabled = MutableStateFlow(prefs.getBoolean(KEY_SOUND, false))
+    private val _soundEnabled = MutableStateFlow(prefs.getBoolean(KEY_SOUND, true))
     val soundEnabled: StateFlow<Boolean> = _soundEnabled.asStateFlow()
 
     private val _thousandsSeparatorEnabled = MutableStateFlow(prefs.getBoolean(KEY_THOUSANDS_SEP, true))

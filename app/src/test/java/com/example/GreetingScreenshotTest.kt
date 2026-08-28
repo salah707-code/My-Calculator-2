@@ -32,10 +32,8 @@ class GreetingScreenshotTest {
             secondaryDisplay = "125 × 1,000 ="
           ),
           currentTheme = AppTheme.DARK,
-          onKeyClick = {},
-          onOpenHistory = {},
-          onOpenSettings = {},
-          onToggleTheme = {}
+          onKeyClick = { _, _ -> },
+          onOpenSettings = {}
         )
       }
     }
@@ -43,4 +41,3 @@ class GreetingScreenshotTest {
     composeTestRule.onRoot().captureRoboImage(filePath = "src/test/screenshots/greeting.png")
   }
 }
-

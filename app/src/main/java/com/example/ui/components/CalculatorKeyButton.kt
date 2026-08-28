@@ -64,16 +64,18 @@ fun CalculatorKeyButton(
 
     val isAllClear = key is CalculatorKey.AllClear
 
+    // Determine target container color based on active state, pressed state, and key type
     val targetContainerColor: Color = when {
+        isActiveOperator -> MaterialTheme.colorScheme.primary
+        isPressed -> MaterialTheme.colorScheme.primaryContainer.copy(alpha = if (isDarkTheme) 0.6f else 0.8f)
         isAllClear -> if (isDarkTheme) CleanRedSoftDark else CleanRedSoft
-        keyType == KeyType.OPERATOR -> if (isActiveOperator) {
-            MaterialTheme.colorScheme.primary
-        } else {
-            if (isDarkTheme) MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.45f) else MaterialTheme.colorScheme.primaryContainer
+        keyType == KeyType.OPERATOR -> {
+            if (isDarkTheme) MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.4f) else MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.7f)
         }
         keyType == KeyType.EQUALS -> MaterialTheme.colorScheme.primary
-        keyType == KeyType.SCIENTIFIC -> if (isDarkTheme) MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.85f) else MaterialTheme.colorScheme.surfaceVariant
-        keyType == KeyType.FUNCTION -> if (isDarkTheme) MaterialTheme.colorScheme.surfaceVariant else MaterialTheme.colorScheme.surfaceVariant
+        keyType == KeyType.SCIENTIFIC || keyType == KeyType.FUNCTION -> {
+            if (isDarkTheme) MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.85f) else MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.95f)
+        }
         keyType == KeyType.UTILITY -> if (isDarkTheme) DarkUtilityKeyBg else LightUtilityKeyBg
         else -> if (isDarkTheme) DarkNumKeyBg else LightNumKeyBg
     }
@@ -83,16 +85,14 @@ fun CalculatorKeyButton(
         label = "btn_bg_color"
     )
 
+    // Determine target text/icon color
     val targetContentColor: Color = when {
+        isActiveOperator -> MaterialTheme.colorScheme.onPrimary
+        isPressed -> MaterialTheme.colorScheme.primary
         isAllClear -> if (isDarkTheme) CleanRedDark else CleanRed
-        keyType == KeyType.OPERATOR -> if (isActiveOperator) {
-            MaterialTheme.colorScheme.onPrimary
-        } else {
-            MaterialTheme.colorScheme.primary
-        }
+        keyType == KeyType.OPERATOR -> MaterialTheme.colorScheme.primary
         keyType == KeyType.EQUALS -> MaterialTheme.colorScheme.onPrimary
-        keyType == KeyType.SCIENTIFIC -> MaterialTheme.colorScheme.primary
-        keyType == KeyType.FUNCTION -> MaterialTheme.colorScheme.primary
+        keyType == KeyType.SCIENTIFIC || keyType == KeyType.FUNCTION -> MaterialTheme.colorScheme.primary
         keyType == KeyType.UTILITY -> if (isDarkTheme) DarkUtilityKeyText else LightUtilityKeyText
         else -> if (isDarkTheme) DarkNumKeyText else LightNumKeyText
     }
@@ -102,25 +102,38 @@ fun CalculatorKeyButton(
         label = "btn_text_color"
     )
 
-    val border: BorderStroke? = when {
-        isActiveOperator -> BorderStroke(2.dp, MaterialTheme.colorScheme.primary.copy(alpha = 0.8f))
-        keyType == KeyType.NUMBER -> BorderStroke(
-            1.dp,
+    // Uniform border styling with rich colors and prominent active border
+    val border: BorderStroke = when {
+        isActiveOperator -> BorderStroke(2.5.dp, MaterialTheme.colorScheme.primary)
+        isPressed -> BorderStroke(2.dp, MaterialTheme.colorScheme.primary.copy(alpha = 0.8f))
+        isAllClear -> BorderStroke(
+            1.2.dp,
+            if (isDarkTheme) CleanRedDark.copy(alpha = 0.5f) else CleanRed.copy(alpha = 0.4f)
+        )
+        keyType == KeyType.EQUALS -> BorderStroke(
+            1.5.dp,
+            MaterialTheme.colorScheme.primary
+        )
+        keyType == KeyType.OPERATOR -> BorderStroke(
+            1.5.dp,
+            MaterialTheme.colorScheme.primary.copy(alpha = if (isDarkTheme) 0.5f else 0.4f)
+        )
+        keyType == KeyType.SCIENTIFIC || keyType == KeyType.FUNCTION -> BorderStroke(
+            1.2.dp,
+            MaterialTheme.colorScheme.primary.copy(alpha = 0.25f)
+        )
+        keyType == KeyType.UTILITY -> BorderStroke(
+            1.2.dp,
             if (isDarkTheme) DarkNumKeyBorder else LightNumKeyBorder
         )
-        keyType == KeyType.FUNCTION || keyType == KeyType.SCIENTIFIC -> BorderStroke(
-            1.dp,
-            MaterialTheme.colorScheme.outline.copy(alpha = 0.25f)
+        else -> BorderStroke(
+            1.2.dp,
+            if (isDarkTheme) DarkNumKeyBorder else LightNumKeyBorder
         )
-        else -> null
     }
 
-    val elevation = when {
-        isActiveOperator -> 6.dp
-        keyType == KeyType.EQUALS -> 4.dp
-        keyType == KeyType.NUMBER -> if (isDarkTheme) 0.dp else 1.dp
-        else -> 0.dp
-    }
+    // Uniform shading/elevation across ALL buttons (including =)
+    val elevation = if (isDarkTheme) 0.dp else 1.dp
 
     val testTag = when (key) {
         is CalculatorKey.Digit -> "btn_${key.value}"
@@ -153,17 +166,18 @@ fun CalculatorKeyButton(
     val displayText = customLabel ?: key.symbol
 
     val fontSize = when {
-        displayText.length >= 4 -> 14.sp
-        displayText.length == 3 -> 16.sp
-        displayText.length == 2 -> 19.sp
-        keyType == KeyType.FUNCTION || keyType == KeyType.SCIENTIFIC -> 18.sp
-        keyType == KeyType.OPERATOR || keyType == KeyType.EQUALS -> 26.sp
-        else -> 24.sp
+        displayText.length >= 4 -> 16.sp
+        displayText.length == 3 -> 19.sp
+        displayText.length == 2 -> 23.sp
+        keyType == KeyType.FUNCTION || keyType == KeyType.SCIENTIFIC -> 21.sp
+        keyType == KeyType.OPERATOR || keyType == KeyType.EQUALS -> 34.sp
+        keyType == KeyType.UTILITY -> 26.sp
+        else -> 32.sp
     }
 
     Card(
         onClick = { onClick(view) },
-        shape = RoundedCornerShape(18.dp),
+        shape = RoundedCornerShape(22.dp),
         colors = CardDefaults.cardColors(
             containerColor = containerColor,
             contentColor = contentColor
@@ -187,10 +201,9 @@ fun CalculatorKeyButton(
             Text(
                 text = displayText,
                 fontSize = fontSize,
-                fontWeight = if (keyType == KeyType.NUMBER) FontWeight.Medium else FontWeight.Bold,
+                fontWeight = if (keyType == KeyType.NUMBER) FontWeight.SemiBold else FontWeight.Bold,
                 color = contentColor
             )
         }
     }
 }
-

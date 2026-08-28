@@ -41,18 +41,30 @@
     <string name="settings_accent_color">Accent Color</string>
     <string name="settings_accent_color_desc">Customize equal button and interactive elements color</string>
     <string name="accent_blue">Royal Blue</string>
-    <string name="accent_emerald">Emerald</string>
-    <string name="accent_purple">Purple</string>
-    <string name="accent_orange">Orange</string>
-    <string name="accent_rose">Berry Rose</string>
-    <string name="accent_teal">Teal</string>
+    <string name="accent_cyan">Luminous Cyan</string>
+    <string name="accent_emerald">Emerald Green</string>
+    <string name="accent_amber">Golden Amber</string>
+    <string name="accent_purple">Royal Purple</string>
+    <string name="accent_orange">Warm Orange</string>
+    <string name="accent_rose">Coral Rose</string>
+    <string name="accent_teal">Elegant Teal</string>
     
     <!-- Calculator Modes -->
+    <string name="settings_calc_mode_section">Calculator Mode &amp; Math</string>
+    <string name="settings_calc_mode_desc">Choose the mode that fits your mathematical tasks</string>
     <string name="mode_basic">Basic</string>
     <string name="mode_scientific">Scientific</string>
+    <string name="mode_basic_desc">Simplified layout with huge buttons for everyday math</string>
+    <string name="mode_scientific_desc">Trigonometry, logarithms, roots, and exponents</string>
     <string name="mode_toggle_desc">Toggle between Basic and Scientific calculator</string>
-    <string name="angle_deg">DEG</string>
-    <string name="angle_rad">RAD</string>
+    <string name="settings_angle_unit">Angle Unit</string>
+    <string name="settings_angle_deg_desc">Degrees (°)</string>
+    <string name="settings_angle_rad_desc">Radians (rad)</string>
+    <string name="angle_deg">DEG (Degrees)</string>
+    <string name="angle_rad">RAD (Radians)</string>
+    <string name="settings_history_section">Calculation History</string>
+    <string name="settings_history_card_desc">View past calculations, copy results or reuse expressions</string>
+    <string name="settings_view_history_btn">Open History Log</string>
 
     <!-- Math Function Descriptions -->
     <string name="func_sqrt">Square Root (√)</string>
@@ -81,6 +93,29 @@
     <string name="settings_about_section">About App</string>
     <string name="app_description">A fast, lightweight, accurate and modern daily calculator working completely offline.</string>
     
+    <!-- Unit Converter Section & Tools -->
+    <string name="settings_tools_section">Quick Tools &amp; Utilities</string>
+    <string name="settings_unit_converter_title">Quick Unit &amp; Currency Converter</string>
+    <string name="settings_unit_converter_desc">Instant conversion for Length, Weight, Currency, Temperature, Area and Volume</string>
+    <string name="settings_open_unit_converter">Open Unit Converter</string>
+    <string name="unit_converter_title">Unit Converter</string>
+    
+    <!-- Unit Categories -->
+    <string name="unit_cat_length">Length</string>
+    <string name="unit_cat_weight">Weight</string>
+    <string name="unit_cat_currency">Currency</string>
+    <string name="unit_cat_temp">Temperature</string>
+    <string name="unit_cat_area">Area</string>
+    <string name="unit_cat_volume">Volume</string>
+
+    <!-- Unit Labels -->
+    <string name="unit_from">From</string>
+    <string name="unit_to">To</string>
+    <string name="unit_swap">Swap Units</string>
+    <string name="unit_use_in_calculator">Use in Calculator</string>
+    <string name="unit_conversion_rate">Base conversion rate:</string>
+    <string name="unit_currency_notice">Exchange rates are approximate for daily estimations</string>
+
     <!-- Actions -->
     <string name="delete">Delete</string>
     <string name="cancel">Cancel</string>

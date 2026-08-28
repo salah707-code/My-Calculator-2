@@ -7,6 +7,7 @@ import android.os.VibrationEffect
 import android.os.Vibrator
 import android.os.VibratorManager
 import android.view.HapticFeedbackConstants
+import android.view.SoundEffectConstants
 import android.view.View
 
 class FeedbackHelper(private val context: Context) {
@@ -24,8 +25,11 @@ class FeedbackHelper(private val context: Context) {
     fun triggerKeyClick(hapticEnabled: Boolean, soundEnabled: Boolean, view: View? = null) {
         if (hapticEnabled) {
             try {
-                if (view != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-                    view.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP)
+                if (view != null) {
+                    view.performHapticFeedback(
+                        HapticFeedbackConstants.KEYBOARD_TAP,
+                        HapticFeedbackConstants.FLAG_IGNORE_GLOBAL_SETTING
+                    )
                 } else if (vibrator != null && vibrator.hasVibrator()) {
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                         vibrator.vibrate(VibrationEffect.createPredefined(VibrationEffect.EFFECT_CLICK))
@@ -43,9 +47,17 @@ class FeedbackHelper(private val context: Context) {
 
         if (soundEnabled) {
             try {
-                audioManager?.playSoundEffect(AudioManager.FX_KEY_CLICK, 0.5f)
+                if (view != null) {
+                    view.playSoundEffect(SoundEffectConstants.CLICK)
+                } else {
+                    audioManager?.playSoundEffect(AudioManager.FX_KEY_CLICK, 1.0f)
+                }
             } catch (e: Exception) {
-                // Ignore audio errors gracefully
+                try {
+                    audioManager?.playSoundEffect(AudioManager.FX_KEY_CLICK, 1.0f)
+                } catch (e2: Exception) {
+                    // Ignore audio errors gracefully
+                }
             }
         }
     }

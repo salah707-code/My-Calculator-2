@@ -20,24 +20,20 @@ jobs:
         with:
           distribution: temurin
           java-version: '17'
-          cache: gradle
 
       - name: Set up Android SDK
         uses: android-actions/setup-android@v3
 
-      - name: Accept Android SDK licenses
-        run: yes | sdkmanager --licenses || true
-
       - name: Install Gradle 9.3.1
         run: |
           wget -q https://services.gradle.org/distributions/gradle-9.3.1-bin.zip
-          unzip -q gradle-9.3.1-bin.zip
-          echo "$PWD/gradle-9.3.1/bin" >> "$GITHUB_PATH"
+          unzip -q gradle-9.3.1-bin.zip -d "$HOME"
+          echo "$HOME/gradle-9.3.1/bin" >> "$GITHUB_PATH"
 
       - name: Build Debug APK
         run: gradle :app:assembleDebug --stacktrace --no-daemon
 
-      - name: Upload APK
+      - name: Upload Debug APK
         uses: actions/upload-artifact@v4
         with:
           name: calculator-debug-apk

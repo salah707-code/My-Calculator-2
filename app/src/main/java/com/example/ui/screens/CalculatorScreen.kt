@@ -105,7 +105,7 @@ fun CalculatorScreen(
                     .padding(horizontal = 18.dp, vertical = 4.dp)
             )
 
-            // Large Display Screen Area with responsive double-sized multi-line numbers
+            // Large Display Screen Area with responsive elegant numbers
             DisplayScreen(
                 expression = state.secondaryDisplay,
                 displayValue = state.primaryDisplay,
@@ -122,12 +122,13 @@ fun CalculatorScreen(
                 },
                 modifier = Modifier
                     .fillMaxWidth()
+                    .weight(1f)
                     .padding(horizontal = 20.dp, vertical = 6.dp)
             )
 
-            // Keypad Container Area - Fills remaining space with large double-height keys
+            // Keypad Container Area - Compact, ergonomic 35% scaled-down buttons
             Card(
-                shape = RoundedCornerShape(topStart = 32.dp, topEnd = 32.dp),
+                shape = RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp),
                 colors = CardDefaults.cardColors(
                     containerColor = MaterialTheme.colorScheme.surface
                 ),
@@ -135,10 +136,10 @@ fun CalculatorScreen(
                     1.dp,
                     MaterialTheme.colorScheme.outline.copy(alpha = if (isDark) 0.35f else 0.2f)
                 ),
-                elevation = CardDefaults.cardElevation(defaultElevation = if (isDark) 0.dp else 4.dp),
+                elevation = CardDefaults.cardElevation(defaultElevation = if (isDark) 0.dp else 3.dp),
                 modifier = Modifier
                     .fillMaxWidth()
-                    .weight(1f)
+                    .height(if (isScientific) 420.dp else 360.dp)
             ) {
                 // Force LTR layout inside keypad so operations (+, −, ×, ÷, =) are strictly on the RIGHT column
                 CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Ltr) {
@@ -150,7 +151,7 @@ fun CalculatorScreen(
                             isDarkTheme = isDark,
                             modifier = Modifier
                                 .fillMaxSize()
-                                .padding(horizontal = 12.dp, vertical = 12.dp)
+                                .padding(horizontal = 10.dp, vertical = 8.dp)
                         )
                     } else {
                         BasicKeypadGrid(
@@ -159,7 +160,7 @@ fun CalculatorScreen(
                             isDarkTheme = isDark,
                             modifier = Modifier
                                 .fillMaxSize()
-                                .padding(horizontal = 14.dp, vertical = 14.dp)
+                                .padding(horizontal = 10.dp, vertical = 10.dp)
                         )
                     }
                 }
@@ -288,8 +289,8 @@ fun DisplayScreen(
             // Primary Result Display (Doubled font size, smart 2-line splitting / auto-resize)
             AutoResizeText(
                 text = displayValue,
-                maxFontSize = 80.sp,
-                minFontSize = 24.sp,
+                maxFontSize = 56.sp,
+                minFontSize = 22.sp,
                 maxLines = 2,
                 fontWeight = FontWeight.Bold,
                 color = if (isError) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.onBackground,
@@ -307,7 +308,7 @@ fun BasicKeypadGrid(
     isDarkTheme: Boolean,
     modifier: Modifier = Modifier
 ) {
-    val spacing = 10.dp
+    val spacing = 7.dp
 
     Column(
         modifier = modifier,
@@ -535,7 +536,7 @@ fun ScientificKeypadGrid(
     isDarkTheme: Boolean,
     modifier: Modifier = Modifier
 ) {
-    val spacing = 7.dp
+    val spacing = 5.dp
 
     Column(
         modifier = modifier,

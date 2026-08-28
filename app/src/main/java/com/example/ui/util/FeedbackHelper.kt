@@ -2,6 +2,7 @@ package com.example.ui.util
 
 import android.content.Context
 import android.media.AudioManager
+import android.media.ToneGenerator
 import android.os.Build
 import android.os.VibrationEffect
 import android.os.Vibrator
@@ -21,6 +22,12 @@ class FeedbackHelper(private val context: Context) {
 
     private val audioManager: AudioManager? =
         context.getSystemService(Context.AUDIO_SERVICE) as? AudioManager
+
+    private var toneGenerator: ToneGenerator? = try {
+        ToneGenerator(AudioManager.STREAM_MUSIC, 65)
+    } catch (e: Exception) {
+        null
+    }
 
     fun triggerKeyClick(hapticEnabled: Boolean, soundEnabled: Boolean, view: View? = null) {
         if (hapticEnabled) {
@@ -47,10 +54,15 @@ class FeedbackHelper(private val context: Context) {
 
         if (soundEnabled) {
             try {
-                if (view != null) {
-                    view.playSoundEffect(SoundEffectConstants.CLICK)
+                // Guaranteed sound playback via ToneGenerator on music stream
+                if (toneGenerator != null) {
+                    toneGenerator?.startTone(ToneGenerator.TONE_PROP_BEEP, 22)
                 } else {
-                    audioManager?.playSoundEffect(AudioManager.FX_KEY_CLICK, 1.0f)
+                    if (view != null) {
+                        view.playSoundEffect(SoundEffectConstants.CLICK)
+                    } else {
+                        audioManager?.playSoundEffect(AudioManager.FX_KEY_CLICK, 1.0f)
+                    }
                 }
             } catch (e: Exception) {
                 try {

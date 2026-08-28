@@ -67,14 +67,12 @@ fun CalculatorKeyButton(
     // Determine target container color based on active state, pressed state, and key type
     val targetContainerColor: Color = when {
         isActiveOperator -> MaterialTheme.colorScheme.primary
-        isPressed -> MaterialTheme.colorScheme.primaryContainer.copy(alpha = if (isDarkTheme) 0.6f else 0.8f)
+        isPressed -> MaterialTheme.colorScheme.primary.copy(alpha = if (isDarkTheme) 0.25f else 0.15f)
         isAllClear -> if (isDarkTheme) CleanRedSoftDark else CleanRedSoft
-        keyType == KeyType.OPERATOR -> {
-            if (isDarkTheme) MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.4f) else MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.7f)
-        }
+        keyType == KeyType.OPERATOR -> if (isDarkTheme) DarkUtilityKeyBg else LightUtilityKeyBg
         keyType == KeyType.EQUALS -> MaterialTheme.colorScheme.primary
         keyType == KeyType.SCIENTIFIC || keyType == KeyType.FUNCTION -> {
-            if (isDarkTheme) MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.85f) else MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.95f)
+            if (isDarkTheme) DarkUtilityKeyBg else LightUtilityKeyBg
         }
         keyType == KeyType.UTILITY -> if (isDarkTheme) DarkUtilityKeyBg else LightUtilityKeyBg
         else -> if (isDarkTheme) DarkNumKeyBg else LightNumKeyBg
@@ -104,30 +102,30 @@ fun CalculatorKeyButton(
 
     // Uniform border styling with rich colors and prominent active border
     val border: BorderStroke = when {
-        isActiveOperator -> BorderStroke(2.5.dp, MaterialTheme.colorScheme.primary)
-        isPressed -> BorderStroke(2.dp, MaterialTheme.colorScheme.primary.copy(alpha = 0.8f))
+        isActiveOperator -> BorderStroke(2.dp, MaterialTheme.colorScheme.primary)
+        isPressed -> BorderStroke(1.5.dp, MaterialTheme.colorScheme.primary.copy(alpha = 0.8f))
         isAllClear -> BorderStroke(
-            1.2.dp,
+            1.dp,
             if (isDarkTheme) CleanRedDark.copy(alpha = 0.5f) else CleanRed.copy(alpha = 0.4f)
         )
         keyType == KeyType.EQUALS -> BorderStroke(
-            1.5.dp,
+            1.dp,
             MaterialTheme.colorScheme.primary
         )
         keyType == KeyType.OPERATOR -> BorderStroke(
-            1.5.dp,
-            MaterialTheme.colorScheme.primary.copy(alpha = if (isDarkTheme) 0.5f else 0.4f)
+            1.dp,
+            MaterialTheme.colorScheme.primary.copy(alpha = if (isDarkTheme) 0.4f else 0.35f)
         )
         keyType == KeyType.SCIENTIFIC || keyType == KeyType.FUNCTION -> BorderStroke(
-            1.2.dp,
+            1.dp,
             MaterialTheme.colorScheme.primary.copy(alpha = 0.25f)
         )
         keyType == KeyType.UTILITY -> BorderStroke(
-            1.2.dp,
+            1.dp,
             if (isDarkTheme) DarkNumKeyBorder else LightNumKeyBorder
         )
         else -> BorderStroke(
-            1.2.dp,
+            1.dp,
             if (isDarkTheme) DarkNumKeyBorder else LightNumKeyBorder
         )
     }
@@ -165,19 +163,20 @@ fun CalculatorKeyButton(
 
     val displayText = customLabel ?: key.symbol
 
+    // Font size scaled down by 35% for clean, elegant proportions
     val fontSize = when {
-        displayText.length >= 4 -> 16.sp
-        displayText.length == 3 -> 19.sp
-        displayText.length == 2 -> 23.sp
-        keyType == KeyType.FUNCTION || keyType == KeyType.SCIENTIFIC -> 21.sp
-        keyType == KeyType.OPERATOR || keyType == KeyType.EQUALS -> 34.sp
-        keyType == KeyType.UTILITY -> 26.sp
-        else -> 32.sp
+        displayText.length >= 4 -> 11.sp
+        displayText.length == 3 -> 13.sp
+        displayText.length == 2 -> 15.sp
+        keyType == KeyType.FUNCTION || keyType == KeyType.SCIENTIFIC -> 14.sp
+        keyType == KeyType.OPERATOR || keyType == KeyType.EQUALS -> 22.sp
+        keyType == KeyType.UTILITY -> 17.sp
+        else -> 21.sp
     }
 
     Card(
         onClick = { onClick(view) },
-        shape = RoundedCornerShape(22.dp),
+        shape = RoundedCornerShape(14.dp),
         colors = CardDefaults.cardColors(
             containerColor = containerColor,
             contentColor = contentColor

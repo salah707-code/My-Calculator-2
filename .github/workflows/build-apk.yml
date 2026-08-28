@@ -2,27 +2,33 @@ name: Build Calculator Android
 
 on:
   workflow_dispatch:
+  push:
+    branches:
+      - main
 
 permissions:
   contents: read
 
 jobs:
   build:
-    name: Build Debug APK
+    name: Build Calculator Android
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Set up JDK 21
+      - name: Set up JDK 17
         uses: actions/setup-java@v5
         with:
           distribution: temurin
-          java-version: '21'
+          java-version: '17'
 
       - name: Set up Android SDK
         uses: android-actions/setup-android@v3
+
+      - name: Accept Android SDK licenses
+        run: yes | sdkmanager --licenses || true
 
       - name: Install Gradle 9.3.1
         run: |
@@ -30,13 +36,12 @@ jobs:
           unzip -q gradle-9.3.1-bin.zip -d "$HOME"
           echo "$HOME/gradle-9.3.1/bin" >> "$GITHUB_PATH"
 
-      - name: Verify environment
+      - name: Generate Gradle Wrapper
         run: |
-          java -version
-          gradle --version
+          gradle wrapper --gradle-version 9.3.1 --distribution-type bin
 
       - name: Build Debug APK
-        run: gradle :app:assembleDebug --stacktrace --no-daemon
+        run: ./gradlew assembleDebug --stacktrace
 
       - name: Upload Debug APK
         uses: actions/upload-artifact@v4

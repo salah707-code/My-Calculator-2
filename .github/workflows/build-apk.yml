@@ -11,7 +11,7 @@ permissions:
 
 jobs:
   build:
-    name: Build Calculator Android
+    name: Build Android APK
     runs-on: ubuntu-latest
 
     steps:
@@ -30,38 +30,25 @@ jobs:
       - name: Accept Android SDK licenses
         run: yes | sdkmanager --licenses || true
 
-      - name: Install Gradle 9.3.1
+      - name: Install required Android SDK packages
         run: |
-          wget -q https://services.gradle.org/distributions/gradle-9.3.1-bin.zip
-          unzip -q gradle-9.3.1-bin.zip -d "$HOME"
-          echo "$HOME/gradle-9.3.1/bin" >> "$GITHUB_PATH"
+          sdkmanager "platform-tools" "platforms;android-36" "build-tools;36.0.0"
+
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v4
+
+      - name: Make Gradle Wrapper executable
+        run: chmod +x ./gradlew
+
+      - name: Verify Gradle Wrapper
+        run: ./gradlew --version
 
       - name: Build Debug APK
-        run: gradle assembleDebug --stacktrace
+        run: ./gradlew :app:assembleDebug --stacktrace
 
       - name: Upload Debug APK
         uses: actions/upload-artifact@v4
         with:
           name: calculator-debug-apk
           path: app/build/outputs/apk/debug/*.apk
-          if-no-files-found: error
-
-      - name: Build Release APK
-        run: gradle assembleRelease --stacktrace
-
-      - name: Upload Release APK
-        uses: actions/upload-artifact@v4
-        with:
-          name: calculator-release-apk
-          path: app/build/outputs/apk/release/*.apk
-          if-no-files-found: error
-
-      - name: Build Release AAB
-        run: gradle bundleRelease --stacktrace
-
-      - name: Upload Release AAB
-        uses: actions/upload-artifact@v4
-        with:
-          name: calculator-release-aab
-          path: app/build/outputs/bundle/release/*.aab
           if-no-files-found: error

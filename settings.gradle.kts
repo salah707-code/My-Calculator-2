@@ -22,6 +22,6 @@ dependencyResolutionManagement {
   }
 }
 
-rootProject.name = "حاسبتي"
+rootProject.name = "الحاسبة الذكية"
 
 include(":app")

@@ -58,10 +58,21 @@ class CalculatorEngine(
     }
 
     fun getState(): CalculatorState {
+        val livePreviewVal: String? = if (!isError && storedOperand != null && currentOperator != null && !isNewInput) {
+            try {
+                val op2 = parseToBigDecimal(currentInput)
+                val previewResult = executeOperation(storedOperand!!, op2, currentOperator!!)
+                if (previewResult != null) formatBigDecimalForDisplay(previewResult) else null
+            } catch (e: Exception) {
+                null
+            }
+        } else null
+
         return CalculatorState(
             primaryDisplay = if (isError) (errorMessage ?: invalidText) else formatForDisplay(currentInput),
             secondaryDisplay = secondaryDisplay,
             activeOperator = currentOperator,
+            livePreview = livePreviewVal,
             isError = isError,
             errorMessage = errorMessage,
             lastCalculation = lastHistoryItem,

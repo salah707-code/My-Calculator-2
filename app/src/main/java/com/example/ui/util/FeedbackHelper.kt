@@ -24,7 +24,7 @@ class FeedbackHelper(private val context: Context) {
         context.getSystemService(Context.AUDIO_SERVICE) as? AudioManager
 
     private var toneGenerator: ToneGenerator? = try {
-        ToneGenerator(AudioManager.STREAM_MUSIC, 65)
+        ToneGenerator(AudioManager.STREAM_MUSIC, 80)
     } catch (e: Exception) {
         null
     }
@@ -54,9 +54,9 @@ class FeedbackHelper(private val context: Context) {
 
         if (soundEnabled) {
             try {
-                // Guaranteed sound playback via ToneGenerator on music stream
+                // Guaranteed sound playback via ToneGenerator on music stream (independent of ringer silent mode)
                 if (toneGenerator != null) {
-                    toneGenerator?.startTone(ToneGenerator.TONE_PROP_BEEP, 22)
+                    toneGenerator?.startTone(ToneGenerator.TONE_PROP_BEEP, 25)
                 } else {
                     if (view != null) {
                         view.playSoundEffect(SoundEffectConstants.CLICK)

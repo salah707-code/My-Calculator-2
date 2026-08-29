@@ -3,6 +3,6 @@
     <item
         android:width="66dp"
         android:height="66dp"
-        android:drawable="@drawable/calculator_lux_icon_1787915115809"
+        android:drawable="@drawable/smart_calculator_logo_1787999350270"
         android:gravity="center" />
 </layer-list>

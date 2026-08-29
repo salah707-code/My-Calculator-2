@@ -9,5 +9,8 @@ data class CalculationHistory(
     val id: Long = 0,
     val expression: String,
     val result: String,
-    val timestamp: Long = System.currentTimeMillis()
+    val timestamp: Long = System.currentTimeMillis(),
+    val note: String = "",
+    val isDeleted: Boolean = false,
+    val deletedAt: Long? = null
 )

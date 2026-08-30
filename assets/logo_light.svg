@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="160" height="40" viewBox="0 0 160 40" role="img" aria-label="My Calculator logo">
+  <rect width="160" height="40" rx="8" fill="#ffffff" />
+  <g transform="translate(12,8)">
+    <rect x="0" y="0" width="24" height="24" rx="4" fill="#0f172a" />
+    <text x="36" y="18" font-family="Inter, Arial, sans-serif" font-size="16" fill="#0f172a">My Calculator</text>
+  </g>
+</svg>

@@ -1,0 +1,59 @@
+/* Styles for My-Calculator-2 - variables for easy scaling */
+:root{
+  --btn-w: 56px;
+  --btn-h: 56px;
+  --btn-font: 18px;
+  --btn-padding: 8px;
+  --btn-gap: 8px;
+  --accent: #0f172a;
+  --bg: #f8fafc;
+}
+
+/* Basic layout */
+body{
+  font-family: system-ui, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
+  background: var(--bg);
+  color: var(--accent);
+  padding: 20px;
+}
+
+.app-header{ display:flex; align-items:center; gap:12px; margin-bottom:12px }
+.logo img{ height:40px; width:auto; }
+
+.calculator{ max-width:420px; margin:0 auto; display:grid; grid-template-columns:1fr; gap:12px }
+.display{ background:#fff; border-radius:8px; padding:12px; min-height:60px; display:flex; align-items:center; justify-content:flex-end; font-size:28px; box-shadow:0 1px 3px rgba(0,0,0,0.06) }
+
+.num-pad{ background:transparent }
+.row{ display:flex; gap:var(--btn-gap); margin-bottom:8px }
+.calc-button{ width:var(--btn-w); height:var(--btn-h); font-size:var(--btn-font); padding:var(--btn-padding); background:#fff; border:1px solid #e6e9ef; cursor:pointer; box-shadow:0 1px 2px rgba(16,24,40,0.04); display:inline-flex; align-items:center; justify-content:center; user-select:none; transition:transform .06s ease, box-shadow .06s ease }
+.calc-button:active{ transform:translateY(1px); box-shadow:none }
+.calc-button.op{ background:#eef2ff }
+.calc-button.wide{ width:calc(var(--btn-w) * 4 + var(--btn-gap) * 3); }
+.calc-button.zero{ width:calc(var(--btn-w) * 1 + var(--btn-gap) * 0); }
+.calc-button.double-zero{ }
+
+/* Default shape */
+.shape-rounded .calc-button{ border-radius:12px }
+.shape-square .calc-button{ border-radius:4px }
+.shape-circular .calc-button{ border-radius:50% }
+
+/* Big buttons mode (+50%) */
+body.big-buttons{
+  --btn-w: calc(56px * 1.5);
+  --btn-h: calc(56px * 1.5);
+  --btn-font: calc(18px * 1.5);
+  --btn-padding: calc(8px * 1.5);
+}
+
+/* Settings panel */
+.settings{ background:#fff; padding:12px; border-radius:8px; box-shadow:0 1px 3px rgba(0,0,0,0.05) }
+.settings h2{ margin-top:0 }
+.settings label{ display:block; margin-bottom:8px; font-size:14px }
+.settings select, .settings input[type="checkbox"]{ margin-left:8px }
+.small{ font-size:13px; padding:6px 8px }
+
+/* responsive */
+@media (max-width:480px){
+  .calculator{ padding:0 6px }
+  .logo img{ height:34px }
+}

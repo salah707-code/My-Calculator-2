@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="ar">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>My Calculator</title>
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <header class="app-header">
+    <!-- Logo (فاتح، رسومي) -->
+    <div class="logo" aria-hidden="true">
+      <!-- Inline SVG fallback to assets/logo_light.svg if not supported -->
+      <img src="assets/logo_light.svg" alt="My Calculator logo" />
+    </div>
+    <h1 class="sr-only">حاسبة</h1>
+  </header>
+
+  <main class="calculator">
+    <section class="display" id="display">0</section>
+
+    <!-- لوحة الأرقام قابلة لإعادة الاستخدام لجم��ع الأنماط -->
+    <section class="num-pad" id="num-pad">
+      <div class="row">
+        <button class="calc-button">7</button>
+        <button class="calc-button">8</button>
+        <button class="calc-button">9</button>
+        <button class="calc-button op">/</button>
+      </div>
+      <div class="row">
+        <button class="calc-button">4</button>
+        <button class="calc-button">5</button>
+        <button class="calc-button">6</button>
+        <button class="calc-button op">*</button>
+      </div>
+      <div class="row">
+        <button class="calc-button">1</button>
+        <button class="calc-button">2</button>
+        <button class="calc-button">3</button>
+        <button class="calc-button op">-</button>
+      </div>
+      <div class="row">
+        <button class="calc-button zero" data-value="0">0</button>
+        <button class="calc-button double-zero" data-value="00">00</button>
+        <button class="calc-button">.</button>
+        <button class="calc-button op">+</button>
+      </div>
+      <div class="row">
+        <button class="calc-button wide" id="equals">=</button>
+      </div>
+    </section>
+
+    <!-- إعدادات بسيطة لتحكم بالشكل والحجم والصوت -->
+    <aside class="settings" id="settings">
+      <h2>الإعدادات</h2>
+      <label>
+        شكل الأزرار:
+        <select id="btn-shape">
+          <option value="rounded">مائلة الزوايا</option>
+          <option value="square">مربع</option>
+          <option value="circular">دائري</option>
+        </select>
+      </label>
+
+      <label>
+        تكبير الأزرار (+50%):
+        <input type="checkbox" id="big-toggle">
+      </label>
+
+      <label>
+        صوت النقر:
+        <input type="checkbox" id="audio-toggle" checked>
+      </label>
+
+      <button id="reset-settings" class="small">إعادة الإعدادات</button>
+    </aside>
+
+  </main>
+
+  <script src="js/app.js"></script>
+</body>
+</html>

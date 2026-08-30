@@ -11,66 +11,61 @@
     <!-- Logo (فاتح، رسومي) -->
     <div class="logo" aria-hidden="true">
       <!-- Inline SVG fallback to assets/logo_light.svg if not supported -->
-      <img src="assets/logo_light.svg" alt="My Calculator logo" />
+      <img src="assets/logo_light.svg" alt="شعار My Calculator" />
     </div>
     <h1 class="sr-only">حاسبة</h1>
   </header>
 
   <main class="calculator">
-    <section class="display" id="display">0</section>
+    <section class="display" id="display" role="status" aria-live="polite">0</section>
 
-    <!-- لوحة الأرقام قابلة لإعادة الاستخدام لجم��ع الأنماط -->
+    <!-- لوحة الأرقام قابلة لإعادة الاستخدام لجميع الأنماط -->
     <section class="num-pad" id="num-pad">
       <div class="row">
-        <button class="calc-button">7</button>
-        <button class="calc-button">8</button>
-        <button class="calc-button">9</button>
-        <button class="calc-button op">/</button>
+        <button class="calc-button" aria-label="7">7</button>
+        <button class="calc-button" aria-label="8">8</button>
+        <button class="calc-button" aria-label="9">9</button>
+        <button class="calc-button op" aria-label="قسمة">/</button>
       </div>
       <div class="row">
-        <button class="calc-button">4</button>
-        <button class="calc-button">5</button>
-        <button class="calc-button">6</button>
-        <button class="calc-button op">*</button>
+        <button class="calc-button" aria-label="4">4</button>
+        <button class="calc-button" aria-label="5">5</button>
+        <button class="calc-button" aria-label="6">6</button>
+        <button class="calc-button op" aria-label="ضرب">*</button>
       </div>
       <div class="row">
-        <button class="calc-button">1</button>
-        <button class="calc-button">2</button>
-        <button class="calc-button">3</button>
-        <button class="calc-button op">-</button>
+        <button class="calc-button" aria-label="1">1</button>
+        <button class="calc-button" aria-label="2">2</button>
+        <button class="calc-button" aria-label="3">3</button>
+        <button class="calc-button op" aria-label="طرح">-</button>
       </div>
       <div class="row">
-        <button class="calc-button zero" data-value="0">0</button>
-        <button class="calc-button double-zero" data-value="00">00</button>
-        <button class="calc-button">.</button>
-        <button class="calc-button op">+</button>
+        <button class="calc-button zero" data-value="0" aria-label="صفر">0</button>
+        <button class="calc-button double-zero" data-value="00" aria-label="صفر صفر">00</button>
+        <button class="calc-button" aria-label="نقطة">.</button>
+        <button class="calc-button op" aria-label="جمع">+</button>
       </div>
       <div class="row">
-        <button class="calc-button wide" id="equals">=</button>
+        <button class="calc-button wide" id="equals" aria-label="يساوي">=</button>
       </div>
     </section>
 
     <!-- إعدادات بسيطة لتحكم بالشكل والحجم والصوت -->
-    <aside class="settings" id="settings">
-      <h2>الإعدادات</h2>
-      <label>
-        شكل الأزرار:
-        <select id="btn-shape">
-          <option value="rounded">مائلة الزوايا</option>
-          <option value="square">مربع</option>
-          <option value="circular">دائري</option>
-        </select>
-      </label>
+    <aside class="settings" id="settings" role="region" aria-labelledby="settings-title">
+      <h2 id="settings-title">الإعدادات</h2>
 
-      <label>
-        تكبير الأزرار (+50%):
-        <input type="checkbox" id="big-toggle">
-      </label>
+      <label for="btn-shape">شكل الأزرار:</label>
+      <select id="btn-shape">
+        <option value="rounded">مائلة الزوايا</option>
+        <option value="square">مربع</option>
+        <option value="circular">دائري</option>
+      </select>
 
-      <label>
-        صوت النقر:
-        <input type="checkbox" id="audio-toggle" checked>
-      </label>
+      <label for="big-toggle">تكبير الأزرار (+50%):</label>
+      <input type="checkbox" id="big-toggle">
+
+      <label for="audio-toggle">صوت النقر:</label>
+      <input type="checkbox" id="audio-toggle" checked>
 
       <button id="reset-settings" class="small">إعادة الإعدادات</button>
     </aside>
